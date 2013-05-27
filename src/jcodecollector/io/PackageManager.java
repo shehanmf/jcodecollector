@@ -23,7 +23,8 @@ import java.util.List;
 
 import jcodecollector.data.DBMS;
 import jcodecollector.common.bean.Snippet;
-import jcodecollector.util.GeneralInfo;
+import jcodecollector.util.ApplicationInfoFactory;
+import jcodecollector.util.DefaultGeneralInfo;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -52,7 +53,7 @@ public class PackageManager {
         }
 
         Element root = new Element("jcc-snippets-package");
-        root.setAttribute("version", GeneralInfo.APPLICATION_VERSION);
+        root.setAttribute("version", ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationVersion());
 
         Iterator<Snippet> iterator = array.iterator();
         while (iterator.hasNext()) {

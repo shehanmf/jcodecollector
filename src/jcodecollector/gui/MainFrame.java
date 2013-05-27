@@ -61,10 +61,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileFilter;
 
-import jcodecollector.MacUtilities;
+//import jcodecollector.MacUtilities;
 import jcodecollector.State;
 import jcodecollector.common.bean.Snippet;
 import jcodecollector.common.bean.Syntax;
+import ecompilerlab.component.SourceList;
 import jcodecollector.data.Controller;
 import jcodecollector.data.DBMS;
 import jcodecollector.data.SearchFilter;
@@ -78,17 +79,13 @@ import jcodecollector.listener.MenuListener;
 import jcodecollector.listener.SearchListener;
 import jcodecollector.listener.SnippetListener;
 import jcodecollector.listener.WindowListener;
-import jcodecollector.util.ApplicationConstants;
-import jcodecollector.util.GeneralInfo;
-import jcodecollector.util.OS;
-import jcodecollector.util.Utility;
+import jcodecollector.util.*;
 
 import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacIcons;
 import com.explodingpixels.macwidgets.MacUtils;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
-import com.explodingpixels.macwidgets.SourceList;
 import com.explodingpixels.macwidgets.SourceListCategory;
 import com.explodingpixels.macwidgets.SourceListContextMenuProvider;
 import com.explodingpixels.macwidgets.SourceListControlBar;
@@ -125,9 +122,6 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
     /** Il pulsante per nasconde il pannello della ricerca */
     private JButton hideButton;
 
-    /** La finestra di About. */
-    private AboutWindow aboutWindow = new AboutWindow(this);
-
     /**
      * Il 'controller' MVC, si occupa di dare i dati all'interfaccia,
      * indipendentemente dalla provenienza degli stessi (database o ricerca).
@@ -140,9 +134,9 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
     private JPanel sourcePanel;
 
     public MainFrame() {
-        setTitle(GeneralInfo.APPLICATION_NAME);
+        setTitle(ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationName());
         if (!OS.isMacOSX()) {
-            setTitle(GeneralInfo.APPLICATION_NAME + " - " + new File(ApplicationSettings.getInstance().getDatabasePath()).getAbsolutePath());
+            setTitle(ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationName());
         }
 
         if (OS.isMacOSX()) {
@@ -263,26 +257,26 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         state.updateMenu(true, true);
         state.updateLineNumbers(true);
 
-        if (OS.isMacOSX()) {
-            initMacUtilities();
-        }
+//        if (OS.isMacOSX()) {
+//            initMacUtilities();
+//        }
     }
 
     JPanel hidePanel = new JPanel();
 
-    private void initMacUtilities() {
-        new MacUtilities().installMacUtilities(this);
-        // try {
-        // ClassLoader loader = ClassLoader.getSystemClassLoader();
-        // Class<?> clazz = loader.loadClass("jcodecollector.MacUtilities");
-        // Object macUtilitiesInstance = clazz.newInstance();
-        // clazz.getMethod("installMacUtilities",
-        // MainFrame.class).invoke(macUtilitiesInstance, this);
-        // } catch (Exception ex) {
-        // System.err.println("cannot load MacUtilities class :-/");
-        // ex.printStackTrace();
-        // }
-    }
+//    private void initMacUtilities() {
+//        new MacUtilities().installMacUtilities(this);
+//        // try {
+//        // ClassLoader loader = ClassLoader.getSystemClassLoader();
+//        // Class<?> clazz = loader.loadClass("jcodecollector.MacUtilities");
+//        // Object macUtilitiesInstance = clazz.newInstance();
+//        // clazz.getMethod("installMacUtilities",
+//        // MainFrame.class).invoke(macUtilitiesInstance, this);
+//        // } catch (Exception ex) {
+//        // System.err.println("cannot load MacUtilities class :-/");
+//        // ex.printStackTrace();
+//        // }
+//    }
 
     /**
      * Seleziona lo snippet che era "corrente" al momento della chiusura
@@ -425,7 +419,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
                     state.updateMenu(true, false);
                     state.updateWindowStatus(false);
 
-                    checkAutoHideCommentPanel(snippet, false);
+//                    checkAutoHideCommentPanel(snippet, false);
                 }
             }
         });
@@ -466,63 +460,63 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
      */
     private boolean previousCommentWasEmpty;
 
-    private void checkAutoHideCommentPanel(Snippet snippet, boolean menuItemClicked) {
-        int length = snippet != null ? snippet.getComment().trim().length() : 0;
-        if (autoHideCommentPanelMenuItem.isSelected()) {
-            if (previousCommentWasEmpty && length == 0) {
-                /* Commento precedente vuoto e attuale vuoto: nascondo il
-                 * pannello. Questo perche' puo' capitare che l'utente commenti
-                 * uno snippet senza commento, per poi spostarsi verso un altro
-                 * snippet senza commento. In questo caso devo nascondere il
-                 * pannello. */
-                hideCommentPanel();
-            } else if (!previousCommentWasEmpty && length == 0) {
-                // commento precedente non vuoto e attuale vuoto: nascondo il
-                // pannello
-                hideCommentPanel();
-            } else if (previousCommentWasEmpty && length > 0) {
-                // commento precedente vuoto e attuale non vuoto: mostro il
-                // pannello
-                showCommentPanel();
-            } else {
-                // precedente non vuoto, attuale non vuoto: non faccio nulla
-            }
-        }
+//    private void checkAutoHideCommentPanel(Snippet snippet, boolean menuItemClicked) {
+//        int length = snippet != null ? snippet.getComment().trim().length() : 0;
+//        if (autoHideCommentPanelMenuItem.isSelected()) {
+//            if (previousCommentWasEmpty && length == 0) {
+//                /* Commento precedente vuoto e attuale vuoto: nascondo il
+//                 * pannello. Questo perche' puo' capitare che l'utente commenti
+//                 * uno snippet senza commento, per poi spostarsi verso un altro
+//                 * snippet senza commento. In questo caso devo nascondere il
+//                 * pannello. */
+//                hideCommentPanel();
+//            } else if (!previousCommentWasEmpty && length == 0) {
+//                // commento precedente non vuoto e attuale vuoto: nascondo il
+//                // pannello
+//                hideCommentPanel();
+//            } else if (previousCommentWasEmpty && length > 0) {
+//                // commento precedente vuoto e attuale non vuoto: mostro il
+//                // pannello
+//                showCommentPanel();
+//            } else {
+//                // precedente non vuoto, attuale non vuoto: non faccio nulla
+//            }
+//        }
+//
+//        /* Arrivo qui in seguito al click diretto sul menu. Se l'auto hide e'
+//         * stato attivato e mi trovo in uno snippet senza commento nascondo il
+//         * pannello. Se mi trovo in uno snippet con commento e il pannello e'
+//         * nascosto lo rendo visibile. */
+//        if (menuItemClicked) {
+//            if (autoHideCommentPanelMenuItem.isSelected()) {
+//                if (length == 0 && showCommentPanelMenuItem.isSelected()) {
+//                    hideCommentPanel();
+//                } else if (length > 0 && !showCommentPanelMenuItem.isSelected()) {
+//                    showCommentPanel();
+//                }
+//            }
+//        }
+//
+//        previousCommentWasEmpty = snippet.getComment().trim().length() == 0;
+//    }
 
-        /* Arrivo qui in seguito al click diretto sul menu. Se l'auto hide e'
-         * stato attivato e mi trovo in uno snippet senza commento nascondo il
-         * pannello. Se mi trovo in uno snippet con commento e il pannello e'
-         * nascosto lo rendo visibile. */
-        if (menuItemClicked) {
-            if (autoHideCommentPanelMenuItem.isSelected()) {
-                if (length == 0 && showCommentPanelMenuItem.isSelected()) {
-                    hideCommentPanel();
-                } else if (length > 0 && !showCommentPanelMenuItem.isSelected()) {
-                    showCommentPanel();
-                }
-            }
-        }
-
-        previousCommentWasEmpty = snippet.getComment().trim().length() == 0;
-    }
-
-    void showCommentPanel() {
-        if (showCommentPanelMenuItem.isSelected()) {
-            // gia' visibile, no faccio nulla
-            return;
-        } else {
-            showCommentPanelMenuItem.doClick();
-        }
-    }
-
-    void hideCommentPanel() {
-        if (showCommentPanelMenuItem.isSelected()) {
-            showCommentPanelMenuItem.doClick();
-        } else {
-            // gia' visibile, no faccio nulla
-            return;
-        }
-    }
+//    void showCommentPanel() {
+//        if (showCommentPanelMenuItem.isSelected()) {
+//            // gia' visibile, no faccio nulla
+//            return;
+//        } else {
+//            showCommentPanelMenuItem.doClick();
+//        }
+//    }
+//
+//    void hideCommentPanel() {
+//        if (showCommentPanelMenuItem.isSelected()) {
+//            showCommentPanelMenuItem.doClick();
+//        } else {
+//            // gia' visibile, no faccio nulla
+//            return;
+//        }
+//    }
 
     private void initSearchComponents() {
         searchTextField = new PromptTextField("", OS.isMacOSX() ? "Search" : "", 15);
@@ -564,9 +558,9 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         ApplicationSettings.getInstance().setSourceListWidth(split.getDividerLocation());
         // ApplicationSettings.getInstance().setEditorWidth(mainPanel.split.getDividerLocation());
         ApplicationSettings.getInstance().setLineNumbersEnabled(mainPanel.scrollPanel.getLineNumbersEnabled());
-        ApplicationSettings.getInstance().setCommentPanelVisible(showCommentPanelMenuItem.isSelected());
+//        ApplicationSettings.getInstance().setCommentPanelVisible(showCommentPanelMenuItem.isSelected());
         ApplicationSettings.getInstance().setSelectedSnippet(state.getNameOfSelectedSnippet());
-        ApplicationSettings.getInstance().setAutoHideCommentEnabled(autoHideCommentPanelMenuItem.isSelected());
+//        ApplicationSettings.getInstance().setAutoHideCommentEnabled(autoHideCommentPanelMenuItem.isSelected());
 
         ApplicationSettingsManager.saveApplicationSettings();
     }
@@ -581,7 +575,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
             state.updateSnippetStatus(false, false, false);
 
             state.updateWindowStatus(true);
-            showCommentPanel();
+//            showCommentPanel();
         }
     };
 
@@ -595,7 +589,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
             state.updateSnippetStatus(false, false, false);
 
             state.updateWindowStatus(true);
-            showCommentPanel();
+//            showCommentPanel();
         }
     };
 
@@ -674,7 +668,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
             state.updateWindowStatus(false);
             state.updateMenu(true, true);
 
-            checkAutoHideCommentPanel(newSnippet, false);
+//            checkAutoHideCommentPanel(newSnippet, false);
         }
 
         /**
@@ -715,7 +709,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         public void actionPerformed(ActionEvent e) {
             searchTextField.setText("");
             if (state.isSearchActive()) {
-                searchEnabledMenuItem.setEnabled(false);
+//                searchEnabledMenuItem.setEnabled(false);
                 state.updateSearch(false);
             }
             updateMenu(true, false);
@@ -772,7 +766,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
             }
 
             // attivo la possibilita' di disattivare la ricerca
-            searchEnabledMenuItem.setEnabled(true);
+//            searchEnabledMenuItem.setEnabled(true);
 
             // la ricerca ha prodotto risultati: lo segnalo ai vari ascoltatori
             state.updateSearch(true);
@@ -890,7 +884,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
                     }
 
                     if (!OS.isMacOSX()) {
-                        setTitle(GeneralInfo.APPLICATION_NAME + " - " + ApplicationSettings.getInstance().getDatabasePath());
+                        setTitle(ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationName());
                     }
                 }
             }
@@ -1457,9 +1451,6 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         return null;
     }
 
-    public AboutWindow getAboutWindow() {
-        return aboutWindow;
-    }
 
     public void countUpdate(int categories, int snippets) {
         String temp = categories + " categor";
@@ -1599,41 +1590,41 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
     // top level menu
     private JMenu fileMenu;
     private JMenu snippetsMenu;
-    private JMenu searchMenu;
+//    private JMenu searchMenu;
     private JMenu viewMenu;
     private JMenu windowMenu;
 
     // file menu
     private JMenuItem reloadSourceListMenuItem;
-    private JMenuItem importFromPackageMenuItem;
+//    private JMenuItem importFromPackageMenuItem;
 
-    private JMenu exportSubMenu;
-    private JMenuItem exportAllMenuItem;
-    private JMenu exportSnippetsInCategorySubMenu;
-    private JMenuItem changeDirectoryMenuItem;
+//    private JMenu exportSubMenu;
+//    private JMenuItem exportAllMenuItem;
+//    private JMenu exportSnippetsInCategorySubMenu;
+//    private JMenuItem changeDirectoryMenuItem;
 
     // view menu
     private JCheckBoxMenuItem showLineNumbersMenuItem;
-    private JCheckBoxMenuItem showCommentPanelMenuItem;
-    private JCheckBoxMenuItem autoHideCommentPanelMenuItem;
+//    private JCheckBoxMenuItem showCommentPanelMenuItem;
+//    private JCheckBoxMenuItem autoHideCommentPanelMenuItem;
 
-    // search menu
-    private JMenuItem searchInLabelMenuItem;
-    private JCheckBoxMenuItem showSearchPanelMenuItem;
-    private JCheckBoxMenuItem namesMenuItem;
-    private JCheckBoxMenuItem tagsMenuItem;
-    private JCheckBoxMenuItem codeMenuItem;
-    private JCheckBoxMenuItem commentsMenuItem;
-    private JCheckBoxMenuItem caseMenuItem;
-    private JMenuItem searchEnabledMenuItem;
+//    // search menu
+//    private JMenuItem searchInLabelMenuItem;
+//    private JCheckBoxMenuItem showSearchPanelMenuItem;
+//    private JCheckBoxMenuItem namesMenuItem;
+//    private JCheckBoxMenuItem tagsMenuItem;
+//    private JCheckBoxMenuItem codeMenuItem;
+//    private JCheckBoxMenuItem commentsMenuItem;
+//    private JCheckBoxMenuItem caseMenuItem;
+//    private JMenuItem searchEnabledMenuItem;
 
     // snippet menu
     private JMenuItem newSnippetMenuItem;
-    private JMenuItem newSnippetFromClipboardMenuItem;
+//    private JMenuItem newSnippetFromClipboardMenuItem;
     private JMenuItem saveSnippetMenuItem;
     private JMenuItem removeSnippetMenuItem;
-    private JMenuItem lockSnippetMenuItem;
-    private JMenuItem copyToClipboardMenuItem;
+//    private JMenuItem lockSnippetMenuItem;
+//    private JMenuItem copyToClipboardMenuItem;
 
     // window menu
     private JMenuItem minimizeWindowMenuItem;
@@ -1656,42 +1647,35 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         reloadSourceListMenuItem = new JMenuItem("Reload Snippets");
         reloadSourceListMenuItem.addActionListener(RELOAD_SOURCE_LIST_ACTION);
 
-        importFromPackageMenuItem = new JMenuItem("Import From A Package...");
-        importFromPackageMenuItem.addActionListener(IMPORT_PACKAGE_ACTION);
-        importFromPackageMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, MENU_SHORTCUT_KEY_MASK | InputEvent.ALT_DOWN_MASK));
+//        importFromPackageMenuItem = new JMenuItem("Import From A Package...");
+//        importFromPackageMenuItem.addActionListener(IMPORT_PACKAGE_ACTION);
+//        importFromPackageMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, MENU_SHORTCUT_KEY_MASK | InputEvent.ALT_DOWN_MASK));
 
         // export sub-menu
-        exportSubMenu = new JMenu("Export");
+//        exportSubMenu = new JMenu("Export");
+//
+//        exportAllMenuItem = new JMenuItem("All Snippets...");
+//        exportAllMenuItem.addActionListener(EXPORT_ALL_SNIPPETS_ACTION);
+//        exportAllMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MENU_SHORTCUT_KEY_MASK | InputEvent.ALT_DOWN_MASK));
+//        exportSubMenu.add(exportAllMenuItem);
 
-        exportAllMenuItem = new JMenuItem("All Snippets...");
-        exportAllMenuItem.addActionListener(EXPORT_ALL_SNIPPETS_ACTION);
-        exportAllMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MENU_SHORTCUT_KEY_MASK | InputEvent.ALT_DOWN_MASK));
-        exportSubMenu.add(exportAllMenuItem);
-
-        exportSnippetsInCategorySubMenu = new JMenu("Only Snippets In");
-        exportSubMenu.add(exportSnippetsInCategorySubMenu);
+//        exportSnippetsInCategorySubMenu = new JMenu("Only Snippets In");
+//        exportSubMenu.add(exportSnippetsInCategorySubMenu);
         // end export sub-menu
 
-        changeDirectoryMenuItem = new JMenuItem("Change Database Location...");
-        changeDirectoryMenuItem.addActionListener(CHANGE_LOCATION_ACTION);
+//        changeDirectoryMenuItem = new JMenuItem("Change Database Location...");
+//        changeDirectoryMenuItem.addActionListener(CHANGE_LOCATION_ACTION);
 
         fileMenu.add(reloadSourceListMenuItem);
-        fileMenu.addSeparator();
-        fileMenu.add(importFromPackageMenuItem);
-        fileMenu.add(exportSubMenu);
-        fileMenu.addSeparator();
-        fileMenu.add(changeDirectoryMenuItem);
+//        fileMenu.addSeparator();
+//        fileMenu.add(importFromPackageMenuItem);
+//        fileMenu.add(exportSubMenu);
+//        fileMenu.addSeparator();
+//        fileMenu.add(changeDirectoryMenuItem);
 
         if (!OS.isMacOSX()) {
-            JMenuItem aboutItem = new JMenuItem("About jCodeCollector");
-            aboutItem.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    MainFrame.this.aboutWindow.setLocationRelativeTo(null);
-                    MainFrame.this.aboutWindow.setVisible(true);
-                }
-            });
 
-            JMenuItem quitApplication = new JMenuItem("Quit jCodeCollector");
+            JMenuItem quitApplication = new JMenuItem("Quit");
             quitApplication.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
             quitApplication.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -1701,7 +1685,6 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
             });
 
             fileMenu.addSeparator();
-            fileMenu.add(aboutItem);
             fileMenu.add(quitApplication);
         }
         // end file menu
@@ -1718,123 +1701,123 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
             showLineNumbersMenuItem.doClick();
         }
 
-        showCommentPanelMenuItem = new JCheckBoxMenuItem("Show Comment");
-        showCommentPanelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK));
-        showCommentPanelMenuItem.setSelected(ApplicationSettings.getInstance().isCommentPanelVisible());
-        showCommentPanelMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (showCommentPanelMenuItem.isSelected()) {
-                    // mainPanel.arrowDownSplitButton.doClick();
-                    mainPanel.add(mainPanel.southPanel, BorderLayout.SOUTH);
-                    mainPanel.mainPanel.setBorder(new EmptyBorder(5, 10, 3, 5));
-                    mainPanel.southPanel.setBorder(new EmptyBorder(0, 10, 7, OS.isMacOSX() ? 7 : 5));
-                } else {
-                    if (mainPanel.southPanel.getParent() != null) {
-                        mainPanel.remove(mainPanel.southPanel);
-                        mainPanel.mainPanel.setBorder(new EmptyBorder(5, 10, OS.isMacOSX() ? 5 : 7, 5));
-                    }
-                    // mainPanel.arrowUpSplitButton.doClick();
-                }
-                mainPanel.getParent().validate();
-            }
-        });
+//        showCommentPanelMenuItem = new JCheckBoxMenuItem("Show Comment");
+//        showCommentPanelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK));
+//        showCommentPanelMenuItem.setSelected(ApplicationSettings.getInstance().isCommentPanelVisible());
+//        showCommentPanelMenuItem.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                if (showCommentPanelMenuItem.isSelected()) {
+//                    // mainPanel.arrowDownSplitButton.doClick();
+//                    mainPanel.add(mainPanel.southPanel, BorderLayout.SOUTH);
+//                    mainPanel.mainPanel.setBorder(new EmptyBorder(5, 10, 3, 5));
+//                    mainPanel.southPanel.setBorder(new EmptyBorder(0, 10, 7, OS.isMacOSX() ? 7 : 5));
+//                } else {
+//                    if (mainPanel.southPanel.getParent() != null) {
+//                        mainPanel.remove(mainPanel.southPanel);
+//                        mainPanel.mainPanel.setBorder(new EmptyBorder(5, 10, OS.isMacOSX() ? 5 : 7, 5));
+//                    }
+//                    // mainPanel.arrowUpSplitButton.doClick();
+//                }
+//                mainPanel.getParent().validate();
+//            }
+//        });
+//
+//        if (showCommentPanelMenuItem.isSelected()) {
+//            mainPanel.add(mainPanel.southPanel, BorderLayout.SOUTH);
+//            mainPanel.mainPanel.setBorder(new EmptyBorder(5, 10, 3, 5));
+//            mainPanel.southPanel.setBorder(new EmptyBorder(0, 10, 7, OS.isMacOSX() ? 7 : 5));
+//            mainPanel.getParent().validate();
+//        }
 
-        if (showCommentPanelMenuItem.isSelected()) {
-            mainPanel.add(mainPanel.southPanel, BorderLayout.SOUTH);
-            mainPanel.mainPanel.setBorder(new EmptyBorder(5, 10, 3, 5));
-            mainPanel.southPanel.setBorder(new EmptyBorder(0, 10, 7, OS.isMacOSX() ? 7 : 5));
-            mainPanel.getParent().validate();
-        }
-
-        autoHideCommentPanelMenuItem = new JCheckBoxMenuItem("Auto Hide Comment If Empty");
-        autoHideCommentPanelMenuItem.setSelected(ApplicationSettings.getInstance().isAutoHideCommentEnabled());
-        autoHideCommentPanelMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                checkAutoHideCommentPanel(DBMS.getInstance().getSnippet(state.getNameOfSelectedSnippet()), true);
-            }
-        });
+//        autoHideCommentPanelMenuItem = new JCheckBoxMenuItem("Auto Hide Comment If Empty");
+//        autoHideCommentPanelMenuItem.setSelected(ApplicationSettings.getInstance().isAutoHideCommentEnabled());
+//        autoHideCommentPanelMenuItem.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                checkAutoHideCommentPanel(DBMS.getInstance().getSnippet(state.getNameOfSelectedSnippet()), true);
+//            }
+//        });
 
         viewMenu.add(showLineNumbersMenuItem);
-        viewMenu.add(showCommentPanelMenuItem);
-        viewMenu.add(autoHideCommentPanelMenuItem);
+//        viewMenu.add(showCommentPanelMenuItem);
+//        viewMenu.add(autoHideCommentPanelMenuItem);
         // end view menu
 
         // search menu
-        searchMenu = new JMenu("Search");
+//        searchMenu = new JMenu("Search");
+//
+//        showSearchPanelMenuItem = new JCheckBoxMenuItem("Show Search Panel");
+//        showSearchPanelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, MENU_SHORTCUT_KEY_MASK));
+//        showSearchPanelMenuItem.addActionListener(SHOW_SEARCH_PANEL_ACTION);
+//
+//        searchInLabelMenuItem = new JMenuItem("Search In...");
+//        searchInLabelMenuItem.setEnabled(false);
+//
+//        namesMenuItem = new JCheckBoxMenuItem("Names", SearchFilter.getInstance().isSearchInNameEnabled());
+//        namesMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
+//        tagsMenuItem = new JCheckBoxMenuItem("Tags", SearchFilter.getInstance().isSearchInTagsEnabled());
+//        tagsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
+//        codeMenuItem = new JCheckBoxMenuItem("Code", SearchFilter.getInstance().isSearchInCodeEnabled());
+//        codeMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
+//        commentsMenuItem = new JCheckBoxMenuItem("Comments", SearchFilter.getInstance().isSearchInCommentEnabled());
+//        commentsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_4, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
+//        caseMenuItem = new JCheckBoxMenuItem("Case Sensitive", SearchFilter.getInstance().isSearchCaseSensitive());
+//        caseMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_5, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
 
-        showSearchPanelMenuItem = new JCheckBoxMenuItem("Show Search Panel");
-        showSearchPanelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, MENU_SHORTCUT_KEY_MASK));
-        showSearchPanelMenuItem.addActionListener(SHOW_SEARCH_PANEL_ACTION);
-
-        searchInLabelMenuItem = new JMenuItem("Search In...");
-        searchInLabelMenuItem.setEnabled(false);
-
-        namesMenuItem = new JCheckBoxMenuItem("Names", SearchFilter.getInstance().isSearchInNameEnabled());
-        namesMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
-        tagsMenuItem = new JCheckBoxMenuItem("Tags", SearchFilter.getInstance().isSearchInTagsEnabled());
-        tagsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
-        codeMenuItem = new JCheckBoxMenuItem("Code", SearchFilter.getInstance().isSearchInCodeEnabled());
-        codeMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
-        commentsMenuItem = new JCheckBoxMenuItem("Comments", SearchFilter.getInstance().isSearchInCommentEnabled());
-        commentsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_4, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
-        caseMenuItem = new JCheckBoxMenuItem("Case Sensitive", SearchFilter.getInstance().isSearchCaseSensitive());
-        caseMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_5, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
-
-        final JCheckBoxMenuItem[] searchItems = { namesMenuItem, tagsMenuItem, codeMenuItem, commentsMenuItem };
-        ItemListener itemListener = new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                int selected = 0; // number of different search enabled
-                for (JCheckBoxMenuItem item : searchItems) {
-                    selected += item.isSelected() ? 1 : 0;
-                }
-
-                JCheckBoxMenuItem source = (JCheckBoxMenuItem) e.getSource();
-
-                // almeno un elemento DEVE essere selezionato!
-                if (selected < 1) {
-                    source.setSelected(true);
-                }
-
-                SearchFilter filter = SearchFilter.getInstance();
-                if (source == namesMenuItem) {
-                    filter.setSearchInNameEnabled(namesMenuItem.isSelected());
-                } else if (source == tagsMenuItem) {
-                    filter.setSearchInTagsEnabled(tagsMenuItem.isSelected());
-                } else if (source == codeMenuItem) {
-                    filter.setSearchInCodeEnabled(codeMenuItem.isSelected());
-                } else if (source == commentsMenuItem) {
-                    filter.setSearchInCommentEnabled(commentsMenuItem.isSelected());
-                }
-
-                // ad ogni cambiamento del filtro rifaccio la ricerca
-                START_SEARCH_ACTION.actionPerformed(null);
-            }
-        };
-
-        for (JCheckBoxMenuItem item : searchItems) {
-            item.addItemListener(itemListener);
-        }
-
-        caseMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                SearchFilter.getInstance().setSearchCaseSensitive(caseMenuItem.isSelected());
-            }
-        });
-
-        searchEnabledMenuItem = new JMenuItem("Clear Search");
-        searchEnabledMenuItem.setEnabled(false);
-        searchEnabledMenuItem.addActionListener(CANCEL_BUTTON_SEARCH_ACTION);
-
-        if (!OS.isMacOSX()) {
-            searchMenu.add(showSearchPanelMenuItem);
-            searchMenu.addSeparator();
-        }
-        searchMenu.add(searchInLabelMenuItem);
-        for (JCheckBoxMenuItem item : searchItems) {
-            searchMenu.add(item);
-        }
-        searchMenu.addSeparator();
-        searchMenu.add(caseMenuItem);
+//        final JCheckBoxMenuItem[] searchItems = { namesMenuItem, tagsMenuItem, codeMenuItem, commentsMenuItem };
+//        ItemListener itemListener = new ItemListener() {
+//            public void itemStateChanged(ItemEvent e) {
+//                int selected = 0; // number of different search enabled
+//                for (JCheckBoxMenuItem item : searchItems) {
+//                    selected += item.isSelected() ? 1 : 0;
+//                }
+//
+//                JCheckBoxMenuItem source = (JCheckBoxMenuItem) e.getSource();
+//
+//                // almeno un elemento DEVE essere selezionato!
+//                if (selected < 1) {
+//                    source.setSelected(true);
+//                }
+//
+//                SearchFilter filter = SearchFilter.getInstance();
+//                if (source == namesMenuItem) {
+//                    filter.setSearchInNameEnabled(namesMenuItem.isSelected());
+//                } else if (source == tagsMenuItem) {
+//                    filter.setSearchInTagsEnabled(tagsMenuItem.isSelected());
+//                } else if (source == codeMenuItem) {
+//                    filter.setSearchInCodeEnabled(codeMenuItem.isSelected());
+//                } else if (source == commentsMenuItem) {
+//                    filter.setSearchInCommentEnabled(commentsMenuItem.isSelected());
+//                }
+//
+//                // ad ogni cambiamento del filtro rifaccio la ricerca
+//                START_SEARCH_ACTION.actionPerformed(null);
+//            }
+//        };
+//
+//        for (JCheckBoxMenuItem item : searchItems) {
+//            item.addItemListener(itemListener);
+//        }
+//
+//        caseMenuItem.addItemListener(new ItemListener() {
+//            public void itemStateChanged(ItemEvent e) {
+//                SearchFilter.getInstance().setSearchCaseSensitive(caseMenuItem.isSelected());
+//            }
+//        });
+//
+//        searchEnabledMenuItem = new JMenuItem("Clear Search");
+//        searchEnabledMenuItem.setEnabled(false);
+//        searchEnabledMenuItem.addActionListener(CANCEL_BUTTON_SEARCH_ACTION);
+//
+//        if (!OS.isMacOSX()) {
+//            searchMenu.add(showSearchPanelMenuItem);
+//            searchMenu.addSeparator();
+//        }
+//        searchMenu.add(searchInLabelMenuItem);
+//        for (JCheckBoxMenuItem item : searchItems) {
+//            searchMenu.add(item);
+//        }
+//        searchMenu.addSeparator();
+//        searchMenu.add(caseMenuItem);
         // end search menu
 
         // snippet menu
@@ -1842,9 +1825,9 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         newSnippetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, MENU_SHORTCUT_KEY_MASK));
         newSnippetMenuItem.addActionListener(NEW_EMPTY_SNIPPET_ACTION);
 
-        newSnippetFromClipboardMenuItem = new JMenuItem("New Snippet From Clipboard...");
-        newSnippetFromClipboardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK));
-        newSnippetFromClipboardMenuItem.addActionListener(NEW_SNIPPET_FROM_CLIPBOARD_ACTION);
+//        newSnippetFromClipboardMenuItem = new JMenuItem("New Snippet From Clipboard...");
+//        newSnippetFromClipboardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK));
+//        newSnippetFromClipboardMenuItem.addActionListener(NEW_SNIPPET_FROM_CLIPBOARD_ACTION);
 
         saveSnippetMenuItem = new JMenuItem("Save");
         saveSnippetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MENU_SHORTCUT_KEY_MASK));
@@ -1858,26 +1841,26 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         removeSnippetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, MENU_SHORTCUT_KEY_MASK));
         removeSnippetMenuItem.addActionListener(REMOVE_SNIPPET_ACTION);
 
-        lockSnippetMenuItem = new JMenuItem("Lock");
-        lockSnippetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK));
-        lockSnippetMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mainPanel.lockButton.doClick();
-            }
-        });
-        copyToClipboardMenuItem = new JMenuItem("Copy Code To Clipboard");
-        copyToClipboardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK));
-        copyToClipboardMenuItem.addActionListener(COPY_TO_CLIPBOARD_ACTION);
+//        lockSnippetMenuItem = new JMenuItem("Lock");
+//        lockSnippetMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK));
+//        lockSnippetMenuItem.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                mainPanel.lockButton.doClick();
+//            }
+//        });
+//        copyToClipboardMenuItem = new JMenuItem("Copy Code To Clipboard");
+//        copyToClipboardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, MENU_SHORTCUT_KEY_MASK | InputEvent.SHIFT_DOWN_MASK));
+//        copyToClipboardMenuItem.addActionListener(COPY_TO_CLIPBOARD_ACTION);
 
         snippetsMenu.add(newSnippetMenuItem);
-        snippetsMenu.add(newSnippetFromClipboardMenuItem);
+//        snippetsMenu.add(newSnippetFromClipboardMenuItem);
         snippetsMenu.addSeparator();
         snippetsMenu.add(saveSnippetMenuItem);
         snippetsMenu.add(removeSnippetMenuItem);
         snippetsMenu.addSeparator();
-        snippetsMenu.add(lockSnippetMenuItem);
-        snippetsMenu.addSeparator();
-        snippetsMenu.add(copyToClipboardMenuItem);
+//        snippetsMenu.add(lockSnippetMenuItem);
+//        snippetsMenu.addSeparator();
+//        snippetsMenu.add(copyToClipboardMenuItem);
         // end snippet menu
 
         // window menu
@@ -1901,7 +1884,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
         menuBar.add(snippetsMenu);
-        menuBar.add(searchMenu);
+//        menuBar.add(searchMenu);
         if (OS.isMacOSX()) {
             menuBar.add(windowMenu);
         }
@@ -1915,36 +1898,36 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         // file menu
         reloadSourceListMenuItem.setEnabled(enabled);
 
-        importFromPackageMenuItem.setEnabled(enabled);
-        exportAllMenuItem.setEnabled(!state.isDatabaseEmpty() && enabled);
-
-        // aggiorno il sub menu con le categorie di destinazione
-        updateExportCategorySubMenu(enabled, resetExportSubMenu);
-
-        changeDirectoryMenuItem.setEnabled(enabled);
+//        importFromPackageMenuItem.setEnabled(enabled);
+//        exportAllMenuItem.setEnabled(!state.isDatabaseEmpty() && enabled);
+//
+//        // aggiorno il sub menu con le categorie di destinazione
+//        updateExportCategorySubMenu(enabled, resetExportSubMenu);
+//
+//        changeDirectoryMenuItem.setEnabled(enabled);
 
         // view menu
         showLineNumbersMenuItem.setEnabled(enabled);
-        showCommentPanelMenuItem.setEnabled(enabled);
-        autoHideCommentPanelMenuItem.setEnabled(enabled);
+//        showCommentPanelMenuItem.setEnabled(enabled);
+//        autoHideCommentPanelMenuItem.setEnabled(enabled);
 
         // search menu
-        showSearchPanelMenuItem.setEnabled(enabled);
-        namesMenuItem.setEnabled(enabled);
-        tagsMenuItem.setEnabled(enabled);
-        codeMenuItem.setEnabled(enabled);
-        commentsMenuItem.setEnabled(enabled);
-        caseMenuItem.setEnabled(enabled);
-        searchEnabledMenuItem.setEnabled(state.isSearchActive() && enabled);
+//        showSearchPanelMenuItem.setEnabled(enabled);
+//        namesMenuItem.setEnabled(enabled);
+//        tagsMenuItem.setEnabled(enabled);
+//        codeMenuItem.setEnabled(enabled);
+//        commentsMenuItem.setEnabled(enabled);
+//        caseMenuItem.setEnabled(enabled);
+//        searchEnabledMenuItem.setEnabled(state.isSearchActive() && enabled);
 
         // snippet menu
         newSnippetMenuItem.setEnabled(enabled);
-        newSnippetFromClipboardMenuItem.setEnabled(enabled);
+//        newSnippetFromClipboardMenuItem.setEnabled(enabled);
         saveSnippetMenuItem.setEnabled(state.isSnippetValidated() && !state.isSnippetLocked() && enabled);
         removeSnippetMenuItem.setEnabled(name != null && enabled);
-        lockSnippetMenuItem.setEnabled((name != null) && state.isSnippetSaved() && state.isSnippetValidated() && enabled);
-        lockSnippetMenuItem.setText((state.isSnippetLocked() ? "Unlock" : "Lock"));
-        copyToClipboardMenuItem.setEnabled(name != null && enabled);
+//        lockSnippetMenuItem.setEnabled((name != null) && state.isSnippetSaved() && state.isSnippetValidated() && enabled);
+//        lockSnippetMenuItem.setText((state.isSnippetLocked() ? "Unlock" : "Lock"));
+//        copyToClipboardMenuItem.setEnabled(name != null && enabled);
 
         // window menu
         minimizeWindowMenuItem.setEnabled(enabled);
@@ -1952,27 +1935,27 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         closeWindowMenuItem.setEnabled(enabled);
     }
 
-    private void updateExportCategorySubMenu(boolean enabled, boolean resetExportSubMenu) {
-        if (!resetExportSubMenu) {
-            return;
-        }
-
-        exportSnippetsInCategorySubMenu.removeAll();
-
-        ArrayList<String> categories = DBMS.getInstance().getCategories();
-        for (int i = 0; i < categories.size(); i++) {
-            JMenuItem categoryMenuItem = new JMenuItem(categories.get(i));
-            categoryMenuItem.addActionListener(EXPORT_CATEGORY_ACTION);
-            categoryMenuItem.setEnabled(enabled);
-            exportSnippetsInCategorySubMenu.add(categoryMenuItem);
-        }
-
-        if (categories.size() == 0) {
-            JMenuItem emptyMenuItem = new JMenuItem("No Categories Available");
-            emptyMenuItem.setEnabled(false);
-            exportSnippetsInCategorySubMenu.add(emptyMenuItem);
-        }
-    }
+//    private void updateExportCategorySubMenu(boolean enabled, boolean resetExportSubMenu) {
+//        if (!resetExportSubMenu) {
+//            return;
+//        }
+//
+//        exportSnippetsInCategorySubMenu.removeAll();
+//
+//        ArrayList<String> categories = DBMS.getInstance().getCategories();
+//        for (int i = 0; i < categories.size(); i++) {
+//            JMenuItem categoryMenuItem = new JMenuItem(categories.get(i));
+//            categoryMenuItem.addActionListener(EXPORT_CATEGORY_ACTION);
+//            categoryMenuItem.setEnabled(enabled);
+//            exportSnippetsInCategorySubMenu.add(categoryMenuItem);
+//        }
+//
+//        if (categories.size() == 0) {
+//            JMenuItem emptyMenuItem = new JMenuItem("No Categories Available");
+//            emptyMenuItem.setEnabled(false);
+//            exportSnippetsInCategorySubMenu.add(emptyMenuItem);
+//        }
+//    }
 
     /** Serial Version UID. */
     private static final long serialVersionUID = 2875157835785998264L;

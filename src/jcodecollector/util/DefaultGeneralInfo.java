@@ -20,25 +20,44 @@ package jcodecollector.util;
  * 
  * @author Alessandro Cocco
  */
-public class GeneralInfo {
+public class DefaultGeneralInfo implements ApplicationInfo{
 
     /** Application's name. */
-    public static final String APPLICATION_NAME = "jCodeCollector";
+    private static final String APPLICATION_NAME = "jCodeCollector";
 
     /** Application's version. */
-    public static final String APPLICATION_VERSION = "2.5";
+    private static final String APPLICATION_VERSION = "2.5";
 
     /** Years of copyright. */
-    public static final String COPYRIGHT_YEARS = "© 2008-2011";
+    private static final String COPYRIGHT_YEARS = "ï¿½ 2008-2011";
 
     /** My blog address. */
-    public static final String BLOG_URL = "http://alessandro-cocco.blogspot.com";
+    private static final String BLOG_URL = "http://alessandro-cocco.blogspot.com";
 
     /** My email address. */
-    public static final String MY_EMAIL = "mailto:alessandro-cocco@javastaff.com";
+    private static final String MY_EMAIL = "mailto:alessandro-cocco@javastaff.com";
 
-    private GeneralInfo() {
+    private DefaultGeneralInfo() {
         // do nothing
     }
 
+    public String getApplicationName() {
+        return APPLICATION_NAME;
+    }
+
+    public String getApplicationVersion() {
+        return APPLICATION_VERSION;
+    }
+
+    public String getCopyrightYears() {
+        return COPYRIGHT_YEARS;
+    }
+
+    public String getBlogUrl() {
+        return BLOG_URL;
+    }
+
+    public  String getMyEmail() {
+        return MY_EMAIL;
+    }
 }

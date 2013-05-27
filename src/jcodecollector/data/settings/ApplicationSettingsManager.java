@@ -23,7 +23,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-import jcodecollector.util.GeneralInfo;
+import jcodecollector.util.ApplicationInfoFactory;
+import jcodecollector.util.DefaultGeneralInfo;
 
 public class ApplicationSettingsManager {
 
@@ -119,8 +120,9 @@ public class ApplicationSettingsManager {
 		properties.put("auto_hide_comment_panel", new Boolean(settings.isAutoHideCommentEnabled()).toString());
 
 		try {
-			properties.store(new FileWriter(file), "jCodeCollector " + GeneralInfo.APPLICATION_VERSION);
-		} catch (IOException e) {
+            properties.store(new FileWriter(file), "ecompilerlab " + ApplicationInfoFactory.getInstance()
+                    .getCurrentApplication().getApplicationVersion());
+        } catch (IOException e) {
 			System.err.println("cannot save data"); // OMFG!
 		}
 	}

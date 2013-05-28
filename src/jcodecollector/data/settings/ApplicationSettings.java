@@ -68,7 +68,7 @@ public class ApplicationSettings {
 	private boolean autoHideCommentEnabled = false;
 
 	/** Il nome del database */
-	public static final String DB_DIR_NAME = "JCODECOLLECTOR_DB";
+	public static final String DB_DIR_NAME = "ECOMPILER_DB";
 
 	/** Default path of database. */
 	public static final String DATABASE_PATH_DEFAULT;
@@ -86,7 +86,7 @@ public class ApplicationSettings {
 			PREFERENCES_PATH_DEFAULT = userDirectory + "/Library/Preferences/com.alessandro.jcodecollector";
 		} else {
 			DATABASE_PATH_DEFAULT = "jCodeCollector";
-			PREFERENCES_PATH_DEFAULT = "jCodeCollector\\settings.dat";
+			PREFERENCES_PATH_DEFAULT = "settings.dat";
 		}
 
 		System.out.println("DEFAULT DATABASE PATH = " + DATABASE_PATH_DEFAULT);

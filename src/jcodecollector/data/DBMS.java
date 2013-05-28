@@ -42,7 +42,7 @@ public class DBMS {
 
     private void init() {
         String connectionURL = "jdbc:derby:";
-        String databasePath = ApplicationSettings.getInstance().getDatabasePath() + "jCodeCollector";
+        String databasePath = ApplicationSettings.getInstance().getDatabasePath() + "ecompilerLab";
         connectionURL += databasePath;
         connectionURL += File.separator + ApplicationSettings.DB_DIR_NAME;
 

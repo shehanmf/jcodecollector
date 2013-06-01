@@ -62,6 +62,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileFilter;
 
 //import jcodecollector.MacUtilities;
+import ecompilerlab.component.CompilationDetailTextArea;
 import jcodecollector.State;
 import jcodecollector.common.bean.Snippet;
 import jcodecollector.common.bean.Syntax;
@@ -107,6 +108,9 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
     /** Il pannello splittato. */
     private JSplitPane split = new JSplitPane();
 
+  private JSplitPane compilationInfoSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+
+  private CompilationDetailTextArea compileInfo = new CompilationDetailTextArea();
     /** Il pannello contenente l'editor degli snippet. */
     public MyDialog mainPanel = new MyDialog(this);
 
@@ -170,6 +174,16 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         split.setRightComponent(mainPanel.getContentPane());
         setPreferredSize(ApplicationSettings.getInstance().getWindowSize());
 
+
+      compilationInfoSplit.setBorder(null);
+      compilationInfoSplit.setDividerSize(1);
+      compilationInfoSplit.setContinuousLayout(true);
+      compilationInfoSplit.setDividerLocation(850);
+//      compilationInfoSplit.setOrientation();
+      compilationInfoSplit.setTopComponent(split);
+//      compilationInfoSplit.getLeftComponent().setMinimumSize(new Dimension(250, 50));
+      compilationInfoSplit.setBottomComponent(new CompilationDetailTextArea());
+
         JButton newSnippet = new JButton("New Snippet");
         newSnippet.setFocusable(false);
         newSnippet.putClientProperty("JButton.buttonType", "textured");
@@ -201,7 +215,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
             unifiedToolBar.addComponentToRight(searchTextField);
             container.add(unifiedToolBar.getComponent(), BorderLayout.NORTH);
         }
-        container.add(split, BorderLayout.CENTER);
+        container.add(compilationInfoSplit, BorderLayout.CENTER);
 
         if (OS.isMacOSX()) {
             BottomBar bottomBar = new BottomBar(BottomBarSize.LARGE);

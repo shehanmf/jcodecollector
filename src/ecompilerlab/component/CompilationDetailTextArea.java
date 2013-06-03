@@ -19,10 +19,13 @@ public class CompilationDetailTextArea extends JPanel
 
   public CompilationDetailTextArea()
   {
-    infoScroll = new JScrollPane();
+
     setLayout(new GridBagLayout());
 
     compileTextArea = new JTextArea();
-//    getViewport().add(compileTextArea);
+    infoScroll = new JScrollPane(compileTextArea);
+    this.add(infoScroll,new GridBagConstraints(0,0,0,0,1.0,1.0,GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0));
+
   }
 }

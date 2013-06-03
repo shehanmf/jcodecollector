@@ -24,8 +24,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -63,13 +61,13 @@ import javax.swing.filechooser.FileFilter;
 
 //import jcodecollector.MacUtilities;
 import ecompilerlab.component.CompilationDetailTextArea;
+import ecompilerlab.component.ECompilerRightPanel;
 import jcodecollector.State;
 import jcodecollector.common.bean.Snippet;
 import jcodecollector.common.bean.Syntax;
 import ecompilerlab.component.SourceList;
 import jcodecollector.data.Controller;
 import jcodecollector.data.DBMS;
-import jcodecollector.data.SearchFilter;
 import jcodecollector.data.settings.ApplicationSettings;
 import jcodecollector.data.settings.ApplicationSettingsManager;
 import jcodecollector.io.FileManager;
@@ -110,7 +108,12 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
 
   private JSplitPane compilationInfoSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
+  private JSplitPane rightSplit = new JSplitPane();
+
+
   private CompilationDetailTextArea compileInfo = new CompilationDetailTextArea();
+
+  private ECompilerRightPanel rightPanel = new ECompilerRightPanel();
     /** Il pannello contenente l'editor degli snippet. */
     public MyDialog mainPanel = new MyDialog(this);
 
@@ -179,10 +182,17 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
       compilationInfoSplit.setDividerSize(1);
       compilationInfoSplit.setContinuousLayout(true);
       compilationInfoSplit.setDividerLocation(850);
-//      compilationInfoSplit.setOrientation();
       compilationInfoSplit.setTopComponent(split);
-//      compilationInfoSplit.getLeftComponent().setMinimumSize(new Dimension(250, 50));
-      compilationInfoSplit.setBottomComponent(new CompilationDetailTextArea());
+      compilationInfoSplit.setBottomComponent(compileInfo);
+
+        rightSplit.setBorder(null);
+        rightSplit.setDividerSize(1);
+        rightSplit.setContinuousLayout(true);
+        rightSplit.setDividerLocation(1350);
+        rightSplit.setLeftComponent(compilationInfoSplit);
+        rightSplit.setRightComponent(rightPanel);
+
+
 
         JButton newSnippet = new JButton("New Snippet");
         newSnippet.setFocusable(false);
@@ -215,7 +225,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
             unifiedToolBar.addComponentToRight(searchTextField);
             container.add(unifiedToolBar.getComponent(), BorderLayout.NORTH);
         }
-        container.add(compilationInfoSplit, BorderLayout.CENTER);
+        container.add(rightSplit, BorderLayout.CENTER);
 
         if (OS.isMacOSX()) {
             BottomBar bottomBar = new BottomBar(BottomBarSize.LARGE);

@@ -2,6 +2,8 @@ package ecompilerlab.component;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,8 +18,12 @@ public class AddLibPanel extends JPanel {
 
     private JButton btnAddLib = new JButton("Add libraries");
 
-    public AddLibPanel()
-    {
+    private Frame parent ;
+
+    public AddLibPanel(final Frame parent) {
+
+        this.parent = parent;
+
         JPanel tmpPanel = new JPanel();
         tmpPanel.setLayout(new BorderLayout());
         JComponent component = libList.getComponent();
@@ -29,9 +35,14 @@ public class AddLibPanel extends JPanel {
         setLayout(new BorderLayout());
         add(tmpPanel,BorderLayout.SOUTH);
         add(btnAddLib,BorderLayout.NORTH);
-//        add(libList.getComponent(), new GridBagConstraints(0,0,0,0,1.0,1.0,GridBagConstraints.CENTER,
-//                GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0));
-//        add(btnAddLib, new GridBagConstraints(0,1,0,0,0.0,0.0,GridBagConstraints.CENTER,
-//                GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0));
+
+        btnAddLib.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AddLibraryDialog dialog = new AddLibraryDialog(parent,true);
+                dialog.setVisible(true);
+
+            }
+        });
     }
 }

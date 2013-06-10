@@ -15,14 +15,14 @@
  */
 package jcodecollector;
 
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 
 import jcodecollector.data.DBMS;
 import jcodecollector.data.settings.ApplicationSettingsManager;
 import jcodecollector.gui.MainFrame;
 import jcodecollector.util.OS;
+
+import java.awt.*;
 
 public class Loader {
 
@@ -31,7 +31,11 @@ public class Loader {
             if (OS.isMacOSX()) {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
             } else if (OS.isWindows()) {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                System.setProperty(
+                        "Quaqua.design","jaguar");
+                UIManager.setLookAndFeel(ch.randelshofer.quaqua.QuaquaManager.getLookAndFeel());
+
+//                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } else if (OS.isLinux()) {
                 UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             }
@@ -58,6 +62,8 @@ public class Loader {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 MainFrame mainFrame = new MainFrame();
+                mainFrame.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                JFrame.setDefaultLookAndFeelDecorated(true);
                 mainFrame.setVisible(true);
 
                 if (OS.isMacOSX()) {

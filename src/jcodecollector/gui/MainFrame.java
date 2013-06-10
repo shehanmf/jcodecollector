@@ -15,12 +15,7 @@
  */
 package jcodecollector.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FileDialog;
-import java.awt.FlowLayout;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -36,23 +31,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -60,7 +39,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileFilter;
 
 //import jcodecollector.MacUtilities;
-import ecompilerlab.component.CompilationDetailTextArea;
+import ecompilerlab.component.CompilationDetailTextPanel;
 import ecompilerlab.component.ECompilerRightPanel;
 import jcodecollector.State;
 import jcodecollector.common.bean.Snippet;
@@ -111,9 +90,10 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
   private JSplitPane rightSplit = new JSplitPane();
 
 
-  private CompilationDetailTextArea compileInfo = new CompilationDetailTextArea();
+  private CompilationDetailTextPanel compileInfo = new CompilationDetailTextPanel();
 
-  private ECompilerRightPanel rightPanel = new ECompilerRightPanel();
+  private ECompilerRightPanel rightPanel = new ECompilerRightPanel(this);
+
     /** Il pannello contenente l'editor degli snippet. */
     public MyDialog mainPanel = new MyDialog(this);
 
@@ -142,6 +122,17 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
 
     public MainFrame() {
         setTitle(ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationName());
+        setUndecorated(true);
+        JRootPane rootPane = getRootPane();
+        rootPane.setWindowDecorationStyle(JRootPane.FRAME);
+
+//        rootPane.putClientProperty("windowModified",Boolean.TRUE);
+//
+        rootPane.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
+//        rootPane.putClientProperty("Quaqua.RootPane.isVertical", Boolean.FALSE);
+//        rootPane.putClientProperty("RootPane.draggableWindowBackground", Boolean.TRUE);
+//        rootPane.putClientProperty("Quaqua.RootPane.isPalette", Boolean.TRUE);
+
         if (!OS.isMacOSX()) {
             setTitle(ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationName());
         }
@@ -284,6 +275,8 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
 //        if (OS.isMacOSX()) {
 //            initMacUtilities();
 //        }
+
+
     }
 
     JPanel hidePanel = new JPanel();

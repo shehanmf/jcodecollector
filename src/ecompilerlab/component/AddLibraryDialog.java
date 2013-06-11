@@ -1,5 +1,8 @@
 package ecompilerlab.component;
 
+import com.explodingpixels.macwidgets.SourceListCategory;
+import com.explodingpixels.macwidgets.SourceListItem;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,10 +16,10 @@ import java.awt.*;
 public class AddLibraryDialog extends JDialog {
 
     private javax.swing.JLabel platform;
-    private javax.swing.JList addedList;
+    private SourceList addedList;
     private javax.swing.JScrollPane addedListScroll;
     private javax.swing.JPanel avlLibPanel;
-    private javax.swing.JList avlList;
+    private SourceList avlList;
     private javax.swing.JScrollPane avlListScroll;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnCancel;
@@ -38,6 +41,21 @@ public class AddLibraryDialog extends JDialog {
         rootPane.putClientProperty("Quaqua.RootPane.isVertical", Boolean.FALSE);
         rootPane.putClientProperty("Quaqua.RootPane.isPalette", Boolean.TRUE);
         initComponents();
+
+        addDummyData();
+    }
+
+    private void addDummyData() {
+
+        SourceListCategory category = new SourceListCategory("Java");
+        avlList.getModel().addCategory(category);
+        avlList.getModel().addItemToCategory(new SourceListItem("Axis 2"),category);
+        avlList.getModel().addItemToCategory(new SourceListItem("DOM"),category);
+        avlList.getModel().addItemToCategory(new SourceListItem("Jasper"),category);
+        avlList.getModel().addItemToCategory(new SourceListItem("XMLBeans"),category);
+        avlList.getModel().addItemToCategory(new SourceListItem("Java2PDF"),category);
+        avlList.getModel().addItemToCategory(new SourceListItem("HTTPS"),category);
+        avlList.getModel().addItemToCategory(new SourceListItem("Axiom"),category);
     }
 
 
@@ -52,11 +70,11 @@ public class AddLibraryDialog extends JDialog {
         cmbLibType = new javax.swing.JComboBox();
         libPanel = new javax.swing.JPanel();
         avlListScroll = new javax.swing.JScrollPane();
-        avlList = new javax.swing.JList();
+        avlList = new SourceList();
         btnAdd = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         addedListScroll = new javax.swing.JScrollPane();
-        addedList = new javax.swing.JList();
+        addedList = new SourceList();
         buttonPanel = new javax.swing.JPanel();
         btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
@@ -103,7 +121,7 @@ public class AddLibraryDialog extends JDialog {
 
         libPanel.setLayout(new java.awt.GridBagLayout());
 
-        avlListScroll.setViewportView(avlList);
+        avlListScroll.setViewportView(avlList.getComponent());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -128,7 +146,7 @@ public class AddLibraryDialog extends JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         libPanel.add(btnRemove, gridBagConstraints);
 
-        addedListScroll.setViewportView(addedList);
+        addedListScroll.setViewportView(addedList.getComponent());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -172,5 +190,7 @@ public class AddLibraryDialog extends JDialog {
         getContentPane().add(buttonPanel, gridBagConstraints);
 
         pack();
+
+        setSize(new Dimension(720,570));
     }
 }

@@ -29,8 +29,12 @@ public class MyCrawler extends WebCrawler {
      */
     @Override
     public boolean shouldVisit(WebURL url) {
+        if(true)
+        {
+            return true;
+        }
         String href = url.getURL().toLowerCase();
-        return !FILTERS.matcher(href).matches() && href.startsWith("http://www.java2s.com/");
+        return !FILTERS.matcher(href).matches() && href.startsWith("http://repository.grepcode.com/java/");
     }
 
     /**

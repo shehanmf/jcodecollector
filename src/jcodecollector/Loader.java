@@ -32,7 +32,7 @@ public class Loader {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
             } else if (OS.isWindows()) {
                 System.setProperty(
-                        "Quaqua.design","jaguar");
+                        "Quaqua.design","Tiger");
                 UIManager.setLookAndFeel(ch.randelshofer.quaqua.QuaquaManager.getLookAndFeel());
 
 //                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

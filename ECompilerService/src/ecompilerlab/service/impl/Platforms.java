@@ -1,4 +1,4 @@
-package ecompilerlab.service;
+package ecompilerlab.service.impl;
 
 /**
  * Created with IntelliJ IDEA.

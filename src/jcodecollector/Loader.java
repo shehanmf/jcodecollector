@@ -26,13 +26,31 @@ import java.awt.*;
 
 public class Loader {
 
+    private static MainFrame mainFrame;
+
+    public static  JFrame getFrameForDialogs()
+    {
+        return mainFrame;
+    }
+
     public static void main(String[] args) {
         try {
             if (OS.isMacOSX()) {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
             } else if (OS.isWindows()) {
-                System.setProperty(
-                        "Quaqua.design","Tiger");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel");
+//                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel");
+//                System.setProperty(
+//                        "Quaqua.design","Tiger");
                 UIManager.setLookAndFeel(ch.randelshofer.quaqua.QuaquaManager.getLookAndFeel());
 
 //                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -61,7 +79,7 @@ public class Loader {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                MainFrame mainFrame = new MainFrame();
+                mainFrame = new MainFrame();
                 mainFrame.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
                 JFrame.setDefaultLookAndFeelDecorated(true);
                 mainFrame.setVisible(true);

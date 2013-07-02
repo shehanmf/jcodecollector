@@ -128,7 +128,7 @@ public class XMLManagerOldVersion {
 
             boolean locked = Boolean.parseBoolean(element.getChildTextTrim("locked"));
 
-            Snippet snippet = new Snippet(-1, category, name, tags, code, comment, syntax, locked);
+            Snippet snippet = new Snippet(-1, category, name, tags, code, comment, syntax, locked,null);
             array.add(snippet);
         }
 
@@ -182,7 +182,7 @@ public class XMLManagerOldVersion {
                     tags.add(tagsIterator.next().getTextTrim());
                 }
 
-                snippets.add(new Snippet(id, category, name, tags.toArray(new String[] {}), code, comment, syntax, locked));
+                snippets.add(new Snippet(id, category, name, tags.toArray(new String[] {}), code, comment, syntax, locked,null));
             }
         }
 

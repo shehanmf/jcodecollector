@@ -2,9 +2,18 @@ package ecompilerlab.component;
 
 import com.explodingpixels.macwidgets.SourceListCategory;
 import com.explodingpixels.macwidgets.SourceListItem;
+import ecompilerlab.component.model.AddLibraryDialogModel;
+import ecompilerlab.service.impl.LibraryEntity;
+import ecompilerlab.service.impl.LibraryType;
+import ecompilerlab.service.impl.Platforms;
+import jcodecollector.Loader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,10 +39,19 @@ public class AddLibraryDialog extends JDialog {
     private javax.swing.JPanel libPanel;
     private javax.swing.JLabel libType;
     private javax.swing.JTextField txtPlatform;
+    private javax.swing.JCheckBox chkAddFromCloud;
 
-    public AddLibraryDialog(Frame owner, boolean modal) {
+    public static int RETURN_STATE_CLOSED = 0;
+    public static int RETURN_STATE_SAVED = 1;
+    private int returnState;
 
-        super(owner, modal);
+    private AddLibraryDialogModel model;
+
+    public AddLibraryDialog( boolean isModalDialog, AddLibraryDialogModel model) {
+
+        super(Loader.getFrameForDialogs(), isModalDialog);
+        setLocationRelativeTo(Loader.getFrameForDialogs());
+        this.model = model;
         setUndecorated(true);
         JRootPane rootPane = getRootPane();
         rootPane.setWindowDecorationStyle(JRootPane.FRAME);
@@ -42,22 +60,123 @@ public class AddLibraryDialog extends JDialog {
         rootPane.putClientProperty("Quaqua.RootPane.isPalette", Boolean.TRUE);
         initComponents();
 
-        addDummyData();
+        returnState = RETURN_STATE_CLOSED;
+        initFromModel();
     }
 
-    private void addDummyData() {
+    private void initFromModel() {
 
-        SourceListCategory category = new SourceListCategory("Java");
-        avlList.getModel().addCategory(category);
-        avlList.getModel().addItemToCategory(new SourceListItem("Axis 2"),category);
-        avlList.getModel().addItemToCategory(new SourceListItem("DOM"),category);
-        avlList.getModel().addItemToCategory(new SourceListItem("Jasper"),category);
-        avlList.getModel().addItemToCategory(new SourceListItem("XMLBeans"),category);
-        avlList.getModel().addItemToCategory(new SourceListItem("Java2PDF"),category);
-        avlList.getModel().addItemToCategory(new SourceListItem("HTTPS"),category);
-        avlList.getModel().addItemToCategory(new SourceListItem("Axiom"),category);
+        resetSourceList(addedList);
+
+
+        txtPlatform.setEnabled(false);
+        txtPlatform.setText(model.getCurruntPatform().toString());
+        cmbLibType.setSelectedItem(model.getSelectedLibType());
+        updateAvailableList();
+        updateAddedListeList();
+
+
+//        SourceListCategory category = new SourceListCategory("Java");
+//        avlList.getModel().addCategory(category);
+//        avlList.getModel().addItemToCategory(new SourceListItem("Axis 2"),category);
+//        avlList.getModel().addItemToCategory(new SourceListItem("DOM"),category);
+//        avlList.getModel().addItemToCategory(new SourceListItem("Jasper"),category);
+//        avlList.getModel().addItemToCategory(new SourceListItem("XMLBeans"),category);
+//        avlList.getModel().addItemToCategory(new SourceListItem("Java2PDF"),category);
+//        avlList.getModel().addItemToCategory(new SourceListItem("HTTPS"),category);
+//        avlList.getModel().addItemToCategory(new SourceListItem("Axiom"),category);
     }
 
+
+    private void updateAddedListeList()
+    {
+
+        resetSourceList(addedList);
+        List<LibraryEntity> addedLibs = model.getSelectedLibraries();
+        if(addedLibs != null && addedLibs.size() > 0)
+        {
+            for (LibraryEntity entity : addedLibs)
+            {
+                ECompilerLibrarySourceListCategory sourceListCategoryOf =
+                        getSourceListCategoryOf(addedList, entity.getPlatform());
+
+                if(sourceListCategoryOf == null)
+                {
+                    sourceListCategoryOf = new ECompilerLibrarySourceListCategory
+                            (entity.getPlatform().toString(), entity.getPlatform());
+                    addedList.getModel().addCategory(sourceListCategoryOf);
+
+                }
+                addedList.getModel().addItemToCategory(new ECompilerLibrarySourceListItem(entity.getName(),entity)
+                        ,sourceListCategoryOf);
+
+            }
+
+        }
+
+    }
+
+    private void updateAvailableList()
+    {
+        resetSourceList(avlList);
+        List<LibraryEntity> availableLibraries = model.getAvailableLibraries();
+
+        if(availableLibraries != null && availableLibraries.size() > 0)
+        {
+            for (LibraryEntity entity : availableLibraries)
+            {
+                ECompilerLibrarySourceListCategory sourceListCategoryOf =
+                        getSourceListCategoryOf(avlList, entity.getPlatform());
+
+                if(sourceListCategoryOf == null)
+                {
+                    sourceListCategoryOf = new ECompilerLibrarySourceListCategory
+                            (entity.getPlatform().toString(), entity.getPlatform());
+                    avlList.getModel().addCategory(sourceListCategoryOf);
+
+                }
+                avlList.getModel().addItemToCategory(new ECompilerLibrarySourceListItem(entity.getName(),entity)
+                        ,sourceListCategoryOf);
+
+            }
+
+        }
+    }
+
+    /**
+     *
+     * @param list
+     * @param categoryPlatform
+     * @return
+     */
+    private ECompilerLibrarySourceListCategory getSourceListCategoryOf(SourceList list, Platforms categoryPlatform) {
+        if (categoryPlatform == null) {
+            throw new IllegalArgumentException("\"category\" must not be null");
+        }
+
+        List<SourceListCategory> categories = list.getModel().getCategories();
+        Iterator<SourceListCategory> iterator = categories.iterator();
+        while (iterator.hasNext()) {
+            ECompilerLibrarySourceListCategory sourceListCategory = (ECompilerLibrarySourceListCategory) iterator.next();
+            if (sourceListCategory.getPlatform().equals(categoryPlatform)) {
+                return sourceListCategory;
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
+     *
+     * @param list
+     */
+    private void resetSourceList(SourceList list) {
+        SourceListCategory[] categories = list.getModel().getCategories().toArray(new SourceListCategory[] {});
+        for (int i = 0; i < categories.length; i++) {
+            list.getModel().removeCategory(categories[i]);
+        }
+    }
 
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
@@ -78,13 +197,13 @@ public class AddLibraryDialog extends JDialog {
         buttonPanel = new javax.swing.JPanel();
         btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
+        chkAddFromCloud = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add New Library");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         avlLibPanel.setLayout(new java.awt.GridBagLayout());
-
         platform.setText("Platform");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -108,7 +227,13 @@ public class AddLibraryDialog extends JDialog {
 
         cmbLibType.setMinimumSize(new java.awt.Dimension(250, 20));
         cmbLibType.setPreferredSize(new java.awt.Dimension(250, 20));
-        cmbLibType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Platform", "Native" }));
+        cmbLibType.setModel(new javax.swing.DefaultComboBoxModel(LibraryType.values()));
+        cmbLibType.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                libraryTypeChanged();
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -133,13 +258,25 @@ public class AddLibraryDialog extends JDialog {
         libPanel.add(avlListScroll, gridBagConstraints);
 
         btnAdd.setText("Add >>");
+        btnAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                libraryAdded();
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         libPanel.add(btnAdd, gridBagConstraints);
 
-        btnRemove.setText("Remove");
+        btnRemove.setText("<< Remove");
+        btnRemove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                libraryRemoved();
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -169,6 +306,12 @@ public class AddLibraryDialog extends JDialog {
         buttonPanel.setLayout(new java.awt.GridBagLayout());
 
         btnSave.setText("Save");
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saved();
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -176,6 +319,13 @@ public class AddLibraryDialog extends JDialog {
         buttonPanel.add(btnSave, gridBagConstraints);
 
         btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                AddLibraryDialog.this.dispose();
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -189,8 +339,53 @@ public class AddLibraryDialog extends JDialog {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         getContentPane().add(buttonPanel, gridBagConstraints);
 
+        chkAddFromCloud.setText("Add Cloud libraries");
+        getContentPane().add(chkAddFromCloud, new java.awt.GridBagConstraints());
+
         pack();
 
         setSize(new Dimension(720,570));
+    }
+
+    private void saved() {
+        this.returnState = RETURN_STATE_SAVED;
+        this.dispose();
+    }
+
+    private void libraryRemoved() {
+
+        ECompilerLibrarySourceListItem selectedItem = (ECompilerLibrarySourceListItem) addedList.getSelectedItem();
+        if(selectedItem != null)
+        {
+            model.libraryRemoved(selectedItem);
+            updateAddedListeList();
+        }
+
+    }
+
+    private void libraryAdded() {
+
+        ECompilerLibrarySourceListItem selectedItem = (ECompilerLibrarySourceListItem) avlList.getSelectedItem();
+        if(selectedItem != null)
+        {
+            model.libraryAdded(selectedItem);
+            updateAddedListeList();
+
+        }
+    }
+
+    private void libraryTypeChanged() {
+        LibraryType selectedItem = (LibraryType) cmbLibType.getSelectedItem();
+        model.setSelectedLibType(selectedItem);
+        model.loadsAvailableLibraries();
+        updateAvailableList();
+    }
+
+    public AddLibraryDialogModel getModel() {
+        return model;
+    }
+
+    public int getReturnState() {
+        return returnState;
     }
 }

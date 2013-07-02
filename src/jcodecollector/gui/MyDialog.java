@@ -52,6 +52,10 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.JTextComponent;
 
+import ecompilerlab.service.WebServiceClient;
+import ecompilerlab.service.WebServiceClientImpl;
+import ecompilerlab.service.impl.Platforms;
+import ecompilerlab.util.SyntaxSupport;
 import jcodecollector.State;
 import jcodecollector.common.bean.Snippet;
 import jcodecollector.data.DBMS;
@@ -71,6 +75,8 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 public class MyDialog extends JDialog implements SnippetListener, CategoryListener {
 
     private static final long serialVersionUID = 4798877825989114217L;
+
+    private WebServiceClient serviceClient = WebServiceClientImpl.getInstance();
 
     JComboBox categories;
     RSyntaxTextArea editor;
@@ -95,6 +101,7 @@ public class MyDialog extends JDialog implements SnippetListener, CategoryListen
     private MainFrame mainframe;
     JPanel southPanel;
     JPanel mainPanel;
+    private String[] currectSnippetLib;
 
     public MyDialog(MainFrame mainframe) {
         super(mainframe);
@@ -129,27 +136,30 @@ public class MyDialog extends JDialog implements SnippetListener, CategoryListen
     }
 
     /** {@link TreeMap} of syntaxes. */
-    private TreeMap<String, String> syntaxMap = new TreeMap<String, String>();
+    private TreeMap<String, String> syntaxMap ;
 
     /** Popola il {@link JComboBox} delle sintassi. */
     private void initSyntax() {
-        syntaxMap.put("", SyntaxConstants.SYNTAX_STYLE_NONE);
+
+        Platforms[] supportedPlatforms = serviceClient.getSupportedPlatforms();
+        syntaxMap = SyntaxSupport.toSyntaxMap(supportedPlatforms);
+//        syntaxMap.put("", SyntaxConstants.SYNTAX_STYLE_NONE);
 //        syntaxMap.put("Assembler (X86)", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_X86);
 //        syntaxMap.put("AppleScript", SyntaxConstants.SYNTAX_STYLE_UNIX_SHELL);
 //        syntaxMap.put("Unix Shell Script", SyntaxConstants.SYNTAX_STYLE_UNIX_SHELL);
-        syntaxMap.put("C", SyntaxConstants.SYNTAX_STYLE_C);
-        syntaxMap.put("C++", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS);
-        syntaxMap.put("C#", SyntaxConstants.SYNTAX_STYLE_CSHARP);
+//        syntaxMap.put("C", SyntaxConstants.SYNTAX_STYLE_C);
+//        syntaxMap.put("C++", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS);
+//        syntaxMap.put("C#", SyntaxConstants.SYNTAX_STYLE_CSHARP);
 //        syntaxMap.put("CSS", SyntaxConstants.SYNTAX_STYLE_CSS);
 //        syntaxMap.put("Delphi", SyntaxConstants.SYNTAX_STYLE_DELPHI);
 //        syntaxMap.put("Lisp", SyntaxConstants.SYNTAX_STYLE_LISP);
 //        syntaxMap.put("Makefile", SyntaxConstants.SYNTAX_STYLE_MAKEFILE);
 //        syntaxMap.put("Perl", SyntaxConstants.SYNTAX_STYLE_PERL);
 //        syntaxMap.put("PHP", SyntaxConstants.SYNTAX_STYLE_PHP);
-        syntaxMap.put("Python", SyntaxConstants.SYNTAX_STYLE_PYTHON);
+//        syntaxMap.put("Python", SyntaxConstants.SYNTAX_STYLE_PYTHON);
 //        syntaxMap.put("Properties File", SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE);
 //        syntaxMap.put("Groovy", SyntaxConstants.SYNTAX_STYLE_GROOVY);
-        syntaxMap.put("Java", SyntaxConstants.SYNTAX_STYLE_JAVA);
+//        syntaxMap.put("Java", SyntaxConstants.SYNTAX_STYLE_JAVA);
 //        syntaxMap.put("JavaScript", SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
 //        syntaxMap.put("JSP", SyntaxConstants.SYNTAX_STYLE_JSP);
 //        syntaxMap.put("Lua", SyntaxConstants.SYNTAX_STYLE_LUA);
@@ -370,7 +380,7 @@ public class MyDialog extends JDialog implements SnippetListener, CategoryListen
         JLabel categoryLabel = new JLabel(" Category:  ", JLabel.RIGHT);
         JLabel nameLabel = new JLabel(" Name:  ", JLabel.RIGHT);
         JLabel tagsLabel = new JLabel(" Tags:  ", JLabel.RIGHT);
-        JLabel syntaxLabel = new JLabel(" Syntax:  ", JLabel.RIGHT);
+        JLabel syntaxLabel = new JLabel(" Platform:  ", JLabel.RIGHT);
 
         // coppie (label, input component)
         JComponent[][] components = { { categoryLabel, categories }, { nameLabel, nameTextField }, { tagsLabel, tagsTextField }, { syntaxLabel, syntaxBox } };
@@ -527,6 +537,10 @@ public class MyDialog extends JDialog implements SnippetListener, CategoryListen
         lockButton.setSelected(snippet.isLocked());
         lockButton.setEnabled(true);
         lock(snippet.isLocked());
+
+        ArrayList<String> libIDs = snippet.getLibIDs();
+        this.currectSnippetLib = libIDs.toArray(new String[]{});
+
     }
 
     /** Svuota l'editor e pulisce tutti i campi. */
@@ -660,7 +674,8 @@ public class MyDialog extends JDialog implements SnippetListener, CategoryListen
         }
 
         int id = DBMS.getInstance().getSnippetId(name);
-        return new Snippet(id, category, name, tags, code, comment, syntax, locked);
+
+        return new Snippet(id, category, name, tags, code, comment, syntax, locked,(currectSnippetLib == null? new String[]{}:currectSnippetLib));
     }
 
     /** @see jcodecollector.listener.SnippetListener#snippetEdited(Snippet) */

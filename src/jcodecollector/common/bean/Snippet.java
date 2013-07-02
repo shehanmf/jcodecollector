@@ -50,6 +50,9 @@ public class Snippet implements Cloneable {
     /** Id dello snippet. */
     private int id;
 
+    /** library ids **/
+    private ArrayList<String> libIDs;
+
     /**
      * Instanzia uno snippet completo dei suoi dati.
      * 
@@ -64,7 +67,7 @@ public class Snippet implements Cloneable {
      *        <code>false</code> altrimenti.
      */
     public Snippet(int id, String category, String name, String[] tags,
-            String code, String comment, String syntax, boolean locked) {
+            String code, String comment, String syntax, boolean locked, String[] libIDs) {
         if (syntax == null) {
             syntax = new String();
         }
@@ -77,11 +80,12 @@ public class Snippet implements Cloneable {
         this.syntax = syntax;
         this.id = id;
         this.locked = locked;
+        this.libIDs = new ArrayList<String>(Arrays.asList(libIDs));
     }
 
     public Snippet(String category, String name, String[] tags, String code,
-            String comment, String syntax) {
-        this(-1, category, name, tags, code, comment, syntax, false);
+            String comment, String syntax,String[] libIDs) {
+        this(-1, category, name, tags, code, comment, syntax, false,libIDs);
     }
 
     /**
@@ -89,7 +93,7 @@ public class Snippet implements Cloneable {
      * validi dai metodi setter.
      */
     public Snippet() {
-        this(-1, "", "", new String[] {}, "", "", "", false);
+        this(-1, "", "", new String[] {}, "", "", "", false,new String[] {});
     }
 
     /**
@@ -225,6 +229,15 @@ public class Snippet implements Cloneable {
         this.id = id;
     }
 
+
+    public ArrayList<String> getLibIDs() {
+        return libIDs;
+    }
+
+    public void setLibIDs(ArrayList<String> libIDs) {
+        this.libIDs = libIDs;
+    }
+
     /**
      * Indica se lo snippet e' bloccato (read-only) o meno.
      * 
@@ -277,6 +290,6 @@ public class Snippet implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return new Snippet(category, name, tags.toArray(new String[] {}), code,
-                comment, syntax);
+                comment, syntax,libIDs.toArray(new String[] {}));
     }
 }

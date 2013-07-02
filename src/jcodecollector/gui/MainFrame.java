@@ -39,12 +39,10 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileFilter;
 
 //import jcodecollector.MacUtilities;
-import ecompilerlab.component.CompilationDetailTextPanel;
-import ecompilerlab.component.ECompilerRightPanel;
+import ecompilerlab.component.*;
 import jcodecollector.State;
 import jcodecollector.common.bean.Snippet;
 import jcodecollector.common.bean.Syntax;
-import ecompilerlab.component.SourceList;
 import jcodecollector.data.Controller;
 import jcodecollector.data.DBMS;
 import jcodecollector.data.settings.ApplicationSettings;
@@ -92,7 +90,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
 
   private CompilationDetailTextPanel compileInfo = new CompilationDetailTextPanel();
 
-  private ECompilerRightPanel rightPanel = new ECompilerRightPanel(this);
+  private ECompilerRightPanel rightPanel = new ECompilerRightPanel();
 
     /** Il pannello contenente l'editor degli snippet. */
     public MyDialog mainPanel = new MyDialog(this);
@@ -128,8 +126,10 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
 
 //        rootPane.putClientProperty("windowModified",Boolean.TRUE);
 //
-        rootPane.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
-//        rootPane.putClientProperty("Quaqua.RootPane.isVertical", Boolean.FALSE);
+//        System.setProperty("Quaqua.design","lion");
+////        rootPane.putClientProperty("Quaqua.design","jaguar");
+//        rootPane.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
+//        rootPane.putClientProperty("Quaqua.RootPane.isVertical", Boolean.TRUE);
 //        rootPane.putClientProperty("RootPane.draggableWindowBackground", Boolean.TRUE);
 //        rootPane.putClientProperty("Quaqua.RootPane.isPalette", Boolean.TRUE);
 
@@ -169,6 +169,17 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
         setPreferredSize(ApplicationSettings.getInstance().getWindowSize());
 
 
+        compileInfo.addCompilerListner(new CompilerListener() {
+            @Override
+            public void fireCompileAction() {
+                OnlineCompilerTask.getInstance().doCompile();
+            }
+
+            @Override
+            public void addCompilerNotifyListener() {
+
+            }
+        });
       compilationInfoSplit.setBorder(null);
       compilationInfoSplit.setDividerSize(1);
       compilationInfoSplit.setContinuousLayout(true);
@@ -427,6 +438,8 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
 
                     // aggiorno l'editor
                     mainPanel.setSnippet(snippet);
+                    rightPanel.setSnippet(snippet);
+                    compileInfo.setSnippet(snippet);
 
                     // scrolla anche quando ci si sposta tra gli snippet
                     // usando le frecce direzionali
@@ -588,6 +601,8 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
             sourceList.clearSelection();
             mainPanel.createNewSnippet();
 
+            rightPanel.createNewSnippet();
+            compileInfo.createNewSnippet();
             state.setPreviousSnippet(null);
             state.updateSnippetStatus(false, false, false);
 
@@ -655,6 +670,9 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
     final ActionListener SAVE_SNIPPET_ACTION = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             Snippet newSnippet = mainPanel.getSnippet();
+            Snippet snippetwithLib = rightPanel.getSnippet();
+            //get only libraries
+            newSnippet.setLibIDs(snippetwithLib.getLibIDs());
             Snippet oldSnippet = state.getPreviousSnippet();
 
             if (newSnippet == null) {

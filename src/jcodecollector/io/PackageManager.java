@@ -131,7 +131,7 @@ public class PackageManager {
             }
 
             // creo lo snippet
-            Snippet snippet = new Snippet(-1, category, name, tags, code, comment, syntax, false);
+            Snippet snippet = new Snippet(-1, category, name, tags, code, comment, syntax, false,null);
             array.add(snippet);
         }
 

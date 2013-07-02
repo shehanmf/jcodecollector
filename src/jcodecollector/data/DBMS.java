@@ -23,11 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 import javax.swing.JOptionPane;
 
@@ -42,7 +38,7 @@ public class DBMS {
 
     private void init() {
         String connectionURL = "jdbc:derby:";
-        String databasePath = ApplicationSettings.getInstance().getDatabasePath() + "ecompilerLab";
+        String databasePath = ApplicationSettings.getInstance().getDatabasePath() + "ecompilerLab1";
         connectionURL += databasePath;
         connectionURL += File.separator + ApplicationSettings.DB_DIR_NAME;
 
@@ -168,6 +164,7 @@ public class DBMS {
                     + ") unique not null, snippet_category varchar(" + ApplicationConstants.CATEGORY_LENGTH
                     + ") not null, snippet_code varchar(" + ApplicationConstants.CODE_LENGTH
                     + ") not null, snippet_comment varchar(" + ApplicationConstants.COMMENT_LENGTH
+                    + "), snippet_lib varchar(" + ApplicationConstants.SNIPPET_LIB_LENGTH
                     + "), snippet_is_locked integer default 0, syntax_name varchar("
                     + ApplicationConstants.SYNTAX_NAME_LENGTH + "))");
 
@@ -290,7 +287,7 @@ public class DBMS {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        String query_insert = "insert into snippets values(DEFAULT, ?, ?, ?, ?, ?, ?)";
+        String query_insert = "insert into snippets values(DEFAULT, ?, ?, ?, ?, ?, ?, ?)";
         String query_selectID = "select id_snippet from snippets where snippet_name = ?";
         String query_insertTag = "insert into tags values ";
 
@@ -303,8 +300,9 @@ public class DBMS {
             statement.setString(2, newSnippet.getCategory());
             statement.setString(3, newSnippet.getCode());
             statement.setString(4, newSnippet.getComment());
-            statement.setInt(5, newSnippet.isLocked() ? 1 : 0);
-            statement.setString(6, newSnippet.getSyntax());
+            statement.setString(5, toLibraryString(newSnippet.getLibIDs()));
+            statement.setInt(6, newSnippet.isLocked() ? 1 : 0);
+            statement.setString(7, newSnippet.getSyntax());
             statement.execute();
             statement = connection.prepareStatement(query_selectID);
             statement.setString(1, newSnippet.getName());
@@ -340,6 +338,33 @@ public class DBMS {
         return success;
     }
 
+
+    /**
+     *
+     * @param libIDs
+     * @return
+     */
+    private String toLibraryString(ArrayList<String> libIDs)
+    {
+        StringBuffer buf = new StringBuffer();
+
+        if(libIDs != null && libIDs.size() > 0)
+        {
+            boolean isFirst = true;
+            for (String id :libIDs)
+            {
+                if(!isFirst)
+                {
+                    buf.append(",");
+                }
+                buf.append(id);
+                isFirst = false;
+            }
+        }
+
+        return buf.toString();
+    }
+
     @SuppressWarnings("unchecked")
     public boolean updateSnippet(Snippet oldSnippet, Snippet newSnippet) {
         assert oldSnippet != null : "oldSnippet must be != null";
@@ -348,6 +373,7 @@ public class DBMS {
             // disabilito l'auto-commit, inizio una transazione.
             connection.setAutoCommit(false);
 
+
             // Preparo la query.
             PreparedStatement preparedStatement = connection.prepareStatement("update snippets "
                     + "set snippet_category = ?, "
@@ -355,7 +381,8 @@ public class DBMS {
                     + "snippet_code = ?, "
                     + "snippet_comment = ?, "
                     + "snippet_is_locked = ?, "
-                    + "snippets.syntax_name = ? "
+                    + "snippets.syntax_name = ?, "
+                    + "snippet_lib = ? "
                     + "where snippet_name = ?");
             preparedStatement.setString(1, newSnippet.getCategory());
             preparedStatement.setString(2, newSnippet.getName());
@@ -363,7 +390,8 @@ public class DBMS {
             preparedStatement.setString(4, newSnippet.getComment());
             preparedStatement.setInt(5, newSnippet.isLocked() ? 1 : 0);
             preparedStatement.setString(6, newSnippet.getSyntax());
-            preparedStatement.setString(7, oldSnippet.getName());
+            preparedStatement.setString(7, toLibraryString(newSnippet.getLibIDs()));
+            preparedStatement.setString(8, oldSnippet.getName());
             preparedStatement.execute();
 
             // Inserisco in un albero i tag da eliminare.
@@ -481,7 +509,7 @@ public class DBMS {
         try {
             // Ricerco lo snippet dal nome passato.
             statement = connection
-                    .prepareStatement("select id_snippet, snippet_category, snippet_code, snippet_comment, snippet_is_locked, syntax_name "
+                    .prepareStatement("select id_snippet, snippet_category, snippet_code, snippet_comment, snippet_is_locked, snippet_lib, syntax_name "
                             + "from snippets where snippet_name = ?");
             statement.setString(1, name);
 
@@ -490,7 +518,7 @@ public class DBMS {
             boolean next = resultSet.next();
 
             if (!next) {
-                statement = connection.prepareStatement("select id_snippet, snippet_category, snippet_code, snippet_comment, snippet_is_locked "
+                statement = connection.prepareStatement("select id_snippet, snippet_category, snippet_code, snippet_comment, snippet_lib , snippet_is_locked "
                         + "from snippets where snippet_name = ?");
                 statement.setString(1, name);
 
@@ -502,6 +530,7 @@ public class DBMS {
             String category = resultSet.getString("snippet_category");
             String code = resultSet.getString("snippet_code");
             String comment = resultSet.getString("snippet_comment");
+            String libIdString  = resultSet.getString("snippet_lib");
             String syntax = next ? resultSet.getString("syntax_name") : "";
             boolean locked = resultSet.getInt("snippet_is_locked") == 1;
 
@@ -516,7 +545,19 @@ public class DBMS {
                 tags.add(resultSet.getString("tag_name"));
             }
 
-            return new Snippet(id, category, name, tags.toArray(new String[] { "" }), code, comment, syntax, locked);
+            ArrayList<String> libIds = new ArrayList<String>();
+            if(libIdString != null)
+            {
+                StringTokenizer tokenizer = new StringTokenizer(libIdString.trim(), ",");
+                int libLength = tokenizer.countTokens();
+
+                for (int i = 0; i < libLength; i++) {
+                    libIds.add(tokenizer.nextToken().trim());
+                }
+            }
+
+
+            return new Snippet(id, category, name, tags.toArray(new String[] { "" }), code, comment, syntax, locked,libIds.toArray(new String[] {}));
         } catch (SQLException ex) {
             System.err.println(ex);
             ex.printStackTrace();
@@ -544,7 +585,7 @@ public class DBMS {
         ResultSet snippets = null;
         ResultSet tags = null;
         String select_snippets_query = "select id_snippet, snippet_category, snippet_name, "
-                + "snippet_code, snippet_comment, snippet_is_locked, syntax_name "
+                + "snippet_code, snippet_comment, snippet_is_locked, syntax_name ,snippet_lib"
                 + "from snippets where snippet_category = ?";
         String select_tags_query = "select tag_name from tags where id_snippet = ?";
         ArrayList<Snippet> array = null;
@@ -589,9 +630,26 @@ public class DBMS {
                 array.add(tags.getString("tag_name").trim());
             }
 
-            newSnippet = new Snippet(snippet.getInt("id_snippet"), snippet.getString("snippet_category"), snippet.getString("snippet_name"),
-                    array.toArray(new String[] {}), snippet.getString("snippet_code"), snippet.getString("snippet_comment"),
-                    snippet.getString("syntax_name"), snippet.getInt("snippet_is_locked") == 1);
+            int id_snippet = snippet.getInt("id_snippet");
+            String snippet_category = snippet.getString("snippet_category");
+            String snippet_name = snippet.getString("snippet_name");
+            String snippet_code = snippet.getString("snippet_code");
+            String snippet_comment = snippet.getString("snippet_comment");
+            boolean snippet_is_locked = snippet.getInt("snippet_is_locked") == 1;
+            String syntax_name = snippet.getString("syntax_name");
+            String snippet_lib = snippet.getString("snippet_lib");
+
+
+            StringTokenizer tokenizer = new StringTokenizer(snippet_lib.trim(), ",");
+            String []libs = new String[tokenizer.countTokens()];
+
+            for (int i = 0; i < libs.length; i++) {
+                libs[i] = tokenizer.nextToken().trim();
+            }
+
+
+            newSnippet = new Snippet(id_snippet, snippet_category, snippet_name,
+                    array.toArray(new String[] {}), snippet_code, snippet_comment,syntax_name, snippet_is_locked,libs);
         } catch (SQLException ex) {
             newSnippet = null;
         }

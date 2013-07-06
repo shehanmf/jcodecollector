@@ -1,7 +1,10 @@
 package ecompilerlab.service;
 
+import ecompilerlab.service.impl.CompileRequest;
+import ecompilerlab.service.impl.CompileResult;
 import ecompilerlab.service.impl.LibraryEntity;
 import ecompilerlab.service.impl.Platforms;
+import ecompilerlab.service.impl.PlatformsInfo;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,10 +13,16 @@ import ecompilerlab.service.impl.Platforms;
  * Time: 8:55 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface WebServiceClient {
+public interface WebServiceClient
+{
 
-    public Platforms[] getSupportedPlatforms();
+  public Platforms[] getSupportedPlatforms();
 
-    public LibraryEntity[] getAllAvailableLibraries();
+  public LibraryEntity[] getAllAvailableLibraries();
 
+  public CompileResult doCompile(CompileRequest request);
+
+  public PlatformsInfo getInfoByPlatform(Platforms platforms);
+
+  LibraryEntity[] getLibrariesByID(String[] ids);
 }

@@ -40,6 +40,9 @@ import javax.swing.filechooser.FileFilter;
 
 //import jcodecollector.MacUtilities;
 import ecompilerlab.component.*;
+import ecompilerlab.service.impl.LibraryEntity;
+import ecompilerlab.service.impl.Platforms;
+import ecompilerlab.util.SyntaxSupport;
 import jcodecollector.State;
 import jcodecollector.common.bean.Snippet;
 import jcodecollector.common.bean.Syntax;
@@ -118,11 +121,14 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
 
     private JPanel sourcePanel;
 
-    public MainFrame() {
-        setTitle(ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationName());
-        setUndecorated(true);
-        JRootPane rootPane = getRootPane();
-        rootPane.setWindowDecorationStyle(JRootPane.FRAME);
+    private JPanel hidePanel = new JPanel();
+
+  public MainFrame()
+  {
+    setTitle(ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationName());
+    setUndecorated(true);
+    JRootPane rootPane = getRootPane();
+    rootPane.setWindowDecorationStyle(JRootPane.FRAME);
 
 //        rootPane.putClientProperty("windowModified",Boolean.TRUE);
 //
@@ -133,178 +139,169 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
 //        rootPane.putClientProperty("RootPane.draggableWindowBackground", Boolean.TRUE);
 //        rootPane.putClientProperty("Quaqua.RootPane.isPalette", Boolean.TRUE);
 
-        if (!OS.isMacOSX()) {
-            setTitle(ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationName());
-        }
-
-        if (OS.isMacOSX()) {
-            setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-            MacUtils.makeWindowLeopardStyle(getRootPane());
-        } else {
-            setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-            addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    prepareAndSaveSettings();
-                    System.exit(0);
-                }
-            });
-        }
-
-        setSize(ApplicationSettings.getInstance().getWindowSize());
-        setMinimumSize(OS.isMacOSX() ? new Dimension(750, 393) : new Dimension(750, 383));
-
-        initSourceList();
-        initSearchComponents();
-
-        sourcePanel = new JPanel(new BorderLayout());
-        sourcePanel.add(sourceList.getComponent(), BorderLayout.CENTER);
-
-        split.setBorder(null);
-        split.setDividerSize(1);
-        split.setContinuousLayout(true);
-        split.setDividerLocation(ApplicationSettings.getInstance().getSourceListWidth());
-        split.setLeftComponent(sourcePanel);
-        split.getLeftComponent().setMinimumSize(new Dimension(250, 50));
-        split.setRightComponent(mainPanel.getContentPane());
-        setPreferredSize(ApplicationSettings.getInstance().getWindowSize());
+    setTitle(ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationName());
 
 
-        compileInfo.addCompilerListner(new CompilerListener() {
-            @Override
-            public void fireCompileAction() {
-                OnlineCompilerTask.getInstance().doCompile();
-            }
-
-            @Override
-            public void addCompilerNotifyListener() {
-
-            }
-        });
-      compilationInfoSplit.setBorder(null);
-      compilationInfoSplit.setDividerSize(1);
-      compilationInfoSplit.setContinuousLayout(true);
-      compilationInfoSplit.setDividerLocation(850);
-      compilationInfoSplit.setTopComponent(split);
-      compilationInfoSplit.setBottomComponent(compileInfo);
-
-        rightSplit.setBorder(null);
-        rightSplit.setDividerSize(1);
-        rightSplit.setContinuousLayout(true);
-        rightSplit.setDividerLocation(1350);
-        rightSplit.setLeftComponent(compilationInfoSplit);
-        rightSplit.setRightComponent(rightPanel);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    addWindowListener(new WindowAdapter()
+    {
+      public void windowClosing(WindowEvent e)
+      {
+        prepareAndSaveSettings();
+        System.exit(0);
+      }
+    });
 
 
+    setSize(ApplicationSettings.getInstance().getWindowSize());
+    setMinimumSize(new Dimension(750, 383));
 
-        JButton newSnippet = new JButton("New Snippet");
-        newSnippet.setFocusable(false);
-        newSnippet.putClientProperty("JButton.buttonType", "textured");
-        newSnippet.addActionListener(NEW_EMPTY_SNIPPET_ACTION);
+    initSourceList();
+    initSearchComponents();
 
-        if (OS.isMacOSX()) {
-            statusLabel = MacWidgetFactory.makeEmphasizedLabel(new JLabel("", JLabel.CENTER));
-            // statusLabel.setFont(statusLabel.getFont().deriveFont(statusLabel.getFont().getSize()
-            // - 1.8f));
-        } else {
-            statusLabel = new JLabel("", JLabel.CENTER);
-        }
+    sourcePanel = new JPanel(new BorderLayout());
+    sourcePanel.add(sourceList.getComponent(), BorderLayout.CENTER);
 
-        UnifiedToolBar unifiedToolBar = new UnifiedToolBar();
-
-        // workaround
-        Border currentToolBarBorder = unifiedToolBar.getComponent().getBorder();
-        Border newToolBarBorder = BorderFactory.createCompoundBorder(new EmptyBorder(-5, 0, 0, 0), currentToolBarBorder);
-        unifiedToolBar.getComponent().setBorder(newToolBarBorder);
-        // end workaround
-
-        unifiedToolBar.addComponentToLeft(newSnippet);
-        unifiedToolBar.disableBackgroundPainter();
-        unifiedToolBar.installWindowDraggerOnWindow(this);
-
-        Container container = getContentPane();
-        container.setLayout(new BorderLayout());
-        if (OS.isMacOSX()) {
-            unifiedToolBar.addComponentToRight(searchTextField);
-            container.add(unifiedToolBar.getComponent(), BorderLayout.NORTH);
-        }
-        container.add(rightSplit, BorderLayout.CENTER);
-
-        if (OS.isMacOSX()) {
-            BottomBar bottomBar = new BottomBar(BottomBarSize.LARGE);
-            bottomBar.addComponentToCenter(statusLabel);
-            bottomBar.installWindowDraggerOnWindow(this);
-            container.add(bottomBar.getComponent(), BorderLayout.SOUTH);
-        } else {
-            JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
-            searchPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-            searchPanel.add(searchTextField, BorderLayout.CENTER);
-
-            JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 0));
-            controlPanel.setBorder(new EmptyBorder(5, 2, 5, 5));
-            if (!OS.isMacOSX()) {
-                controlPanel.add(turnOffButton);
-            }
-
-            hidePanel.setLayout(new BorderLayout());
-            hidePanel.setBorder(new CompoundBorder(new EmptyBorder(-2, -2, -1, -2), new EtchedBorder()));
-            hidePanel.add(searchPanel, BorderLayout.CENTER);
-            if (!OS.isMacOSX()) {
-                JLabel searchLabel = new JLabel("<html>Press <b>ENTER</b> to start search, <b>CTRL+K</b> to cancel</html>");
-                searchLabel.setBorder(new EmptyBorder(5, 5, 0, 5));
-                hidePanel.add(searchLabel, BorderLayout.NORTH);
-            }
-        }
-
-        pack();
-
-        // creo e aggiungo la barra menu
-        buildMenuBar();
-
-        try {
-            setLocation(ApplicationSettings.getInstance().getWindowLocation());
-        } catch (Exception ex) {
-            setLocationRelativeTo(null);
-        }
-
-        // registro i vari ascoltatori personalizzati
-        state.addSnippetListener(this);
-        state.addSnippetListener(mainPanel);
-
-        state.addCategoryListener(this);
-        state.addCategoryListener(mainPanel);
-        state.addCountListener(this);
-
-        state.addMenuListener(this);
-        state.addWindowListener(this);
-        state.addSearchListener(this);
-
-        // effettuo subito alcuni aggiornamenti
-        state.countUpdate();
-        state.updateMenu(true, true);
-        state.updateLineNumbers(true);
-
-//        if (OS.isMacOSX()) {
-//            initMacUtilities();
-//        }
+    split.setBorder(null);
+    split.setDividerSize(1);
+    split.setContinuousLayout(true);
+    split.setDividerLocation(ApplicationSettings.getInstance().getSourceListWidth());
+    split.setLeftComponent(sourcePanel);
+    split.getLeftComponent().setMinimumSize(new Dimension(250, 50));
+    split.setRightComponent(mainPanel.getContentPane());
+    setPreferredSize(ApplicationSettings.getInstance().getWindowSize());
 
 
+    compilationInfoSplit.setBorder(null);
+    compilationInfoSplit.setDividerSize(1);
+    compilationInfoSplit.setContinuousLayout(true);
+    compilationInfoSplit.setDividerLocation(850);
+    compilationInfoSplit.setTopComponent(split);
+    compilationInfoSplit.setBottomComponent(compileInfo);
+
+    rightSplit.setBorder(null);
+    rightSplit.setDividerSize(1);
+    rightSplit.setContinuousLayout(true);
+    rightSplit.setDividerLocation(1350);
+    rightSplit.setLeftComponent(compilationInfoSplit);
+    rightSplit.setRightComponent(rightPanel);
+
+
+    JButton newSnippet = new JButton("New Snippet");
+    newSnippet.setFocusable(false);
+    newSnippet.putClientProperty("JButton.buttonType", "textured");
+    newSnippet.addActionListener(NEW_EMPTY_SNIPPET_ACTION);
+
+    statusLabel = new JLabel("", JLabel.CENTER);
+
+
+    UnifiedToolBar unifiedToolBar = new UnifiedToolBar();
+
+    // workaround
+    Border currentToolBarBorder = unifiedToolBar.getComponent().getBorder();
+    Border newToolBarBorder = BorderFactory.createCompoundBorder(new EmptyBorder(-5, 0, 0, 0), currentToolBarBorder);
+    unifiedToolBar.getComponent().setBorder(newToolBarBorder);
+    // end workaround
+
+    unifiedToolBar.addComponentToLeft(newSnippet);
+    unifiedToolBar.disableBackgroundPainter();
+    unifiedToolBar.installWindowDraggerOnWindow(this);
+
+    Container container = getContentPane();
+    container.setLayout(new BorderLayout());
+
+    container.add(rightSplit, BorderLayout.CENTER);
+
+    JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
+    searchPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+    searchPanel.add(searchTextField, BorderLayout.CENTER);
+
+    JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 0));
+    controlPanel.setBorder(new EmptyBorder(5, 2, 5, 5));
+
+    controlPanel.add(turnOffButton);
+
+
+    hidePanel.setLayout(new BorderLayout());
+    hidePanel.setBorder(new CompoundBorder(new EmptyBorder(-2, -2, -1, -2), new EtchedBorder()));
+    hidePanel.add(searchPanel, BorderLayout.CENTER);
+    if (!OS.isMacOSX())
+    {
+      JLabel searchLabel = new JLabel("<html>Press <b>ENTER</b> to start search, <b>CTRL+K</b> to cancel</html>");
+      searchLabel.setBorder(new EmptyBorder(5, 5, 0, 5));
+      hidePanel.add(searchLabel, BorderLayout.NORTH);
     }
 
-    JPanel hidePanel = new JPanel();
 
-//    private void initMacUtilities() {
-//        new MacUtilities().installMacUtilities(this);
-//        // try {
-//        // ClassLoader loader = ClassLoader.getSystemClassLoader();
-//        // Class<?> clazz = loader.loadClass("jcodecollector.MacUtilities");
-//        // Object macUtilitiesInstance = clazz.newInstance();
-//        // clazz.getMethod("installMacUtilities",
-//        // MainFrame.class).invoke(macUtilitiesInstance, this);
-//        // } catch (Exception ex) {
-//        // System.err.println("cannot load MacUtilities class :-/");
-//        // ex.printStackTrace();
-//        // }
-//    }
+    pack();
+
+    // creo e aggiungo la barra menu
+    buildMenuBar();
+
+    try
+    {
+      setLocation(ApplicationSettings.getInstance().getWindowLocation());
+    }
+    catch (Exception ex)
+    {
+      setLocationRelativeTo(null);
+    }
+
+    // registro i vari ascoltatori personalizzati
+    state.addSnippetListener(this);
+    state.addSnippetListener(mainPanel);
+
+    state.addCategoryListener(this);
+    state.addCategoryListener(mainPanel);
+    state.addCountListener(this);
+
+    state.addMenuListener(this);
+    state.addWindowListener(this);
+    state.addSearchListener(this);
+
+    // effettuo subito alcuni aggiornamenti
+    state.countUpdate();
+    state.updateMenu(true, true);
+    state.updateLineNumbers(true);
+
+    addCompilationSupport();
+  }
+
+
+  private void addCompilationSupport()
+  {
+
+    OnlineCompilerTask.getInstance().setDataProvider(new CompilerDataProvideListener()
+    {
+
+      @Override
+      public String getCodeToCompiler()
+      {
+        final Snippet snippet = mainPanel.getSnippet();
+        return snippet.getCode();
+      }
+
+      @Override
+      public ArrayList<String> getCurrentLibraries()
+      {
+        Snippet snippetwithLib = rightPanel.getSnippet();
+        return snippetwithLib.getLibIDs();
+      }
+
+      @Override
+      public Platforms getCodePlatform()
+      {
+        final Snippet snippet = mainPanel.getSnippet();
+        return SyntaxSupport.toPlatform(snippet.getSyntax());
+      }
+
+      @Override
+      public void notifyPerformed(TextEntry textEntry)
+      {
+        compileInfo.append(textEntry);
+      }
+    });
+  }
 
     /**
      * Seleziona lo snippet che era "corrente" al momento della chiusura

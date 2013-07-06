@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import jcodecollector.util.ApplicationInfoFactory;
-import jcodecollector.util.DefaultGeneralInfo;
 
 public class ApplicationSettingsManager {
 

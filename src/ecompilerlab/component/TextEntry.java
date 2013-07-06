@@ -7,34 +7,54 @@ package ecompilerlab.component;
  * Time: 2:10 AM
  * To change this template use File | Settings | File Templates.
  */
-public class TextEntry {
+public class TextEntry
+{
 
-    private String text;
+  private String text;
 
-    private ENTRY_TYPE entrType;
+  private boolean newLine;
 
-    public enum ENTRY_TYPE{
-        INFO,ERROR,MESSAGE
-    }
+  private ENTRY_TYPE entrType;
 
-    public TextEntry(String text, ENTRY_TYPE entrType) {
-        this.text = text;
-        this.entrType = entrType;
-    }
+  public enum ENTRY_TYPE
+  {
+    INFO, ERROR, MESSAGE
+  }
 
-    public String getText() {
-        return text;
-    }
+  public TextEntry(String text, boolean newLine, ENTRY_TYPE entrType)
+  {
+    this.text = text;
+    this.newLine = newLine;
+    this.entrType = entrType;
+  }
 
-    public void setText(String text) {
-        this.text = text;
-    }
+  public String getText()
+  {
+    return text;
+  }
 
-    public ENTRY_TYPE getEntrType() {
-        return entrType;
-    }
+  public void setText(String text)
+  {
+    this.text = text;
+  }
 
-    public void setEntrType(ENTRY_TYPE entrType) {
-        this.entrType = entrType;
-    }
+  public ENTRY_TYPE getEntrType()
+  {
+    return entrType;
+  }
+
+  public void setEntrType(ENTRY_TYPE entrType)
+  {
+    this.entrType = entrType;
+  }
+
+  public boolean isNewLine()
+  {
+    return newLine;
+  }
+
+  public void setNewLine(boolean newLine)
+  {
+    this.newLine = newLine;
+  }
 }

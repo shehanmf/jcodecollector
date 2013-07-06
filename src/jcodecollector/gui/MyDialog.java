@@ -35,23 +35,12 @@ import java.util.Collections;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.JTextComponent;
 
+import ecompilerlab.component.OnlineCompilerTask;
 import ecompilerlab.service.WebServiceClient;
 import ecompilerlab.service.WebServiceClientImpl;
 import ecompilerlab.service.impl.Platforms;
@@ -277,6 +266,31 @@ public class MyDialog extends JDialog implements SnippetListener, CategoryListen
         syntaxBox.setEditable(false);
 
         editor = new RSyntaxTextArea();
+
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem menuCompile = new JMenuItem("Compile");
+        JMenuItem menuCompileAndRun = new JMenuItem("Compile & Run");
+        menuCompile.addActionListener(new ActionListener()
+        {
+          @Override
+          public void actionPerformed(ActionEvent e)
+          {
+            OnlineCompilerTask.getInstance().doCompile();
+          }
+        });
+        menuCompileAndRun.addActionListener(new ActionListener()
+        {
+          @Override
+          public void actionPerformed(ActionEvent e)
+          {
+            OnlineCompilerTask.getInstance().doCompileAndRun();
+          }
+        });
+        menu.add(menuCompile);
+        menu.add(menuCompileAndRun);
+
+        editor.setComponentPopupMenu(menu);
+
         editor.setDocument(new LimitedSyntaxDocument(ApplicationConstants.CODE_LENGTH));
         editor.setFadeCurrentLineHighlight(true);
         editor.setMarginLineEnabled(true);

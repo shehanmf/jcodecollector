@@ -10,6 +10,8 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,120 +23,188 @@ import java.awt.event.ActionListener;
 public class CompilationDetailTextPanel extends JPanel implements SnippetChangeSupport
 {
 
+  // Variables declaration - do not modify
+  private javax.swing.JButton btnCompile;
 
-    private CompilerListener compilerListner;
+  private javax.swing.JScrollPane jScrollPane2;
 
-    public CompilationDetailTextPanel() {
-        initComponents();
-    }
+  private JTextPane txtCompoileInfo;
+
+  public CompilationDetailTextPanel()
+  {
+    initComponents();
+  }
 
 
-    @SuppressWarnings("unchecked")
-    private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
+  @SuppressWarnings("unchecked")
+  private void initComponents()
+  {
+    java.awt.GridBagConstraints gridBagConstraints;
 
-        btnCompile = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtCompoileInfo = new JTextPane();
-        txtCompoileInfo.setEditable(false);
-        setLayout(new java.awt.GridBagLayout());
+    btnCompile = new javax.swing.JButton();
+    jScrollPane2 = new javax.swing.JScrollPane();
+    txtCompoileInfo = new JTextPane();
+    txtCompoileInfo.setEditable(false);
 
-        btnCompile.setEnabled(false);
-        btnCompile.setText("<html><b>Compile</b><br> & <br><b>Run</b></html>");
-        btnCompile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                compileSnippet();
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.weighty = 1.0;
-        add(btnCompile, gridBagConstraints);
+
+    JPopupMenu menu = new JPopupMenu();
+
+    JMenuItem menuItemClear = new JMenuItem( "Clear");
+    menuItemClear.addActionListener(new ActionListener()
+    {
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        clear();
+      }
+    });
+    menu.add(menuItemClear);
+    txtCompoileInfo.setComponentPopupMenu(menu);
+//    add(menu);
+
+    addMouseListener(
+      new PopupTriggerMouseListener(
+        menu,
+        this
+      )
+    );
+
+
+    setLayout(new java.awt.GridBagLayout());
+
+    btnCompile.setEnabled(false);
+    btnCompile.setText("<html><b>Compile</b><br> & <br><b>Run</b></html>");
+    btnCompile.addActionListener(new ActionListener()
+    {
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        compileSnippet();
+      }
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+    gridBagConstraints.weighty = 1.0;
+    add(btnCompile, gridBagConstraints);
 
 //        txtCompoileInfo.setColumns(20);
 //        txtCompoileInfo.setRows(5);
-        jScrollPane2.setViewportView(txtCompoileInfo);
+    jScrollPane2.setViewportView(txtCompoileInfo);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(jScrollPane2, gridBagConstraints);
-    }// </editor-fold>
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.weighty = 1.0;
+    add(jScrollPane2, gridBagConstraints);
+  }// </editor-fold>
 
-    private void compileSnippet() {
-        this.compilerListner.fireCompileAction();
-    }
-
-    // Variables declaration - do not modify
-    private javax.swing.JButton btnCompile;
-    private javax.swing.JScrollPane jScrollPane2;
-    private JTextPane txtCompoileInfo;
-
-    @Override
-    public void setSnippet(Snippet snippet) {
-        btnCompile.setEnabled(true);
-
-        clear();
-        append(new TextEntry("Snippet set.... (" + snippet.getName() + ")", TextEntry.ENTRY_TYPE.ERROR));
-
-    }
-
-    @Override
-    public Snippet getSnippet() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void createNewSnippet() {
-        btnCompile.setEnabled(false);
-    }
-
-    public void addCompilerListner(CompilerListener compilerListner) {
-
-        this.compilerListner = compilerListner;
-    }
+  private void compileSnippet()
+  {
+    OnlineCompilerTask.getInstance().doCompile();
+//    this.compilerListner.fireCompileAction();
+  }
 
 
-    private void clear()
+  @Override
+  public void setSnippet(Snippet snippet)
+  {
+    btnCompile.setEnabled(true);
+
+    clear();
+    append(new TextEntry("Snippet set.... (" + snippet.getName() + ")", true ,TextEntry.ENTRY_TYPE.ERROR));
+
+  }
+
+  @Override
+  public Snippet getSnippet()
+  {
+    return null;
+  }
+
+  @Override
+  public void createNewSnippet()
+  {
+    btnCompile.setEnabled(false);
+  }
+
+  private void clear()
+  {
+    txtCompoileInfo.setText("");
+  }
+
+  public void append(TextEntry textEntry)
+  {
+    Color color;
+    switch (textEntry.getEntrType())
     {
-        txtCompoileInfo.setText("");
+      case ERROR:
+        color = Color.RED;
+        break;
+      case MESSAGE:
+        color = Color.BLACK;
+        break;
+      case INFO:
+      default:
+        color = Color.BLACK;
     }
+    StyleContext sc = StyleContext.getDefaultStyleContext();
+    AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
 
-    private void append(TextEntry textEntry)
+    aset = sc.addAttribute(aset, StyleConstants.FontFamily, "verdana");
+    aset = sc.addAttribute(aset, StyleConstants.FontSize, 12);
+    aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+    int len = txtCompoileInfo.getDocument().getLength();
+    txtCompoileInfo.setEditable(true);
+    txtCompoileInfo.setCaretPosition(len);
+    txtCompoileInfo.setCharacterAttributes(aset, false);
+    txtCompoileInfo.replaceSelection((textEntry.isNewLine() ? "\n" : "") + textEntry.getText());
+//    txtCompoileInfo.set
+    txtCompoileInfo.setEditable(false);
+  }
+
+
+  public static class PopupTriggerMouseListener extends MouseAdapter
+  {
+    private JPopupMenu popup;
+
+    private JComponent component;
+
+    public PopupTriggerMouseListener(JPopupMenu popup, JComponent component)
     {
-        Color color;
-        switch (textEntry.getEntrType())
-        {
-            case ERROR:
-                color = Color.RED;
-                break;
-            case MESSAGE:
-                color = Color.GREEN;
-                break;
-            case INFO:
-            default:
-                color = Color.BLACK;
-        }
-        StyleContext sc = StyleContext.getDefaultStyleContext();
-        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
-
-        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
-        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-
-        int len = txtCompoileInfo.getDocument().getLength();
-        txtCompoileInfo.setEditable(true);
-        txtCompoileInfo.setCaretPosition(len);
-        txtCompoileInfo.setCharacterAttributes(aset, false);
-        txtCompoileInfo.replaceSelection(textEntry.getText());
-        txtCompoileInfo.setEditable(false);
+      this.popup = popup;
+      this.component = component;
     }
 
+    //some systems trigger popup on mouse press, others on mouse release, we want to cater for both
+    private void showMenuIfPopupTrigger(MouseEvent e)
+    {
+      if (e.isPopupTrigger())
+      {
+        popup.show(component, e.getX() + 3, e.getY() + 3);
+      }
+    }
 
+    //according to the javadocs on isPopupTrigger, checking for popup trigger on mousePressed and mouseReleased
+    //should be all  that is required
+    //public void mouseClicked(MouseEvent e)
+    //{
+    //    showMenuIfPopupTrigger(e);
+    //}
+
+    public void mousePressed(MouseEvent e)
+    {
+      showMenuIfPopupTrigger(e);
+    }
+
+    public void mouseReleased(MouseEvent e)
+    {
+      showMenuIfPopupTrigger(e);
+    }
+  }
 
 }

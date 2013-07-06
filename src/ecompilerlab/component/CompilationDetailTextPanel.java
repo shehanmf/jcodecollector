@@ -116,6 +116,10 @@ public class CompilationDetailTextPanel extends JPanel implements SnippetChangeS
                 break;
             case MESSAGE:
                 color = Color.GREEN;
+
+
+
+
                 break;
             case INFO:
             default:

@@ -3,6 +3,8 @@ package ecompilerlab.component;
 import ecompilerlab.service.WebServiceClient;
 import ecompilerlab.service.WebServiceClientImpl;
 import ecompilerlab.service.impl.CompileRequest;
+import ecompilerlab.service.app.CompileResult;
+import ecompilerlab.service.impl.CompileResponse;
 import ecompilerlab.service.impl.LibraryEntity;
 import ecompilerlab.service.impl.Platforms;
 import ecompilerlab.service.impl.PlatformsInfo;
@@ -37,33 +39,62 @@ public class OnlineCompilerTask
   public void doCompile()
   {
     final Platforms codePlatform = this.dataProvider.getCodePlatform();
-    final String codeToCompiler = this.dataProvider.getCodeToCompiler();
+    final String codeToCompile = this.dataProvider.getCodeToCompiler();
     final ArrayList<String> currentLibraries = this.dataProvider.getCurrentLibraries();
 
-
-    CompileRequest request = new CompileRequest();
-    request.setCode(codeToCompiler);
-    request.setPlatform(codePlatform);
-    request.setLibraryIDs(currentLibraries.toArray(new String[]{}));
+    CompileRequest request = new CompileRequest(codeToCompile, codePlatform, currentLibraries.toArray(new String[]{}),
+      true);
 
     printCompilationInfo(codePlatform, currentLibraries);
+
+    dataProvider.notifyPerformed(new TextEntry("Compiling.........", true,TextEntry.ENTRY_TYPE.INFO));
+    final CompileResponse compileResponse = serviceClient.doCompile(request);
+
+    if(compileResponse.getState() == CompileResponse.SUCCESS)
+    {
+      dataProvider.notifyPerformed(new TextEntry(compileResponse.getResultString(), true,TextEntry.ENTRY_TYPE.INFO));
+    }
+    else if(compileResponse.getState() == CompileResponse.COMPILE_ERROR)
+    {
+      dataProvider.notifyPerformed(new TextEntry("Compile Error", true,TextEntry.ENTRY_TYPE.ERROR));
+      dataProvider.notifyPerformed(new TextEntry(compileResponse.getResultString(), true,TextEntry.ENTRY_TYPE.ERROR));
+    }
+
   }
 
 
   public void doCompileAndRun()
   {
     final Platforms codePlatform = this.dataProvider.getCodePlatform();
-    final String codeToCompiler = this.dataProvider.getCodeToCompiler();
+    final String codeToCompile = this.dataProvider.getCodeToCompiler();
     final ArrayList<String> currentLibraries = this.dataProvider.getCurrentLibraries();
 
 
-    CompileRequest request = new CompileRequest();
-    request.setCode(codeToCompiler);
-    request.setPlatform(codePlatform);
-    request.setLibraryIDs(currentLibraries.toArray(new String[]{}));
+    CompileRequest request = new CompileRequest(codeToCompile, codePlatform, currentLibraries.toArray(new String[]{}),
+      false);
 
     printCompilationInfo(codePlatform, currentLibraries);
 
+    dataProvider.notifyPerformed(new TextEntry("Compiling.........", true,TextEntry.ENTRY_TYPE.INFO));
+    final CompileResponse compileResponse = serviceClient.doCompile(request);
+
+    if(compileResponse.getState() == CompileResponse.SUCCESS)
+    {
+
+      dataProvider.notifyPerformed(new TextEntry("\n", true,TextEntry.ENTRY_TYPE.INFO));
+      dataProvider.notifyPerformed(new TextEntry("Running...", true,TextEntry.ENTRY_TYPE.ERROR));
+      dataProvider.notifyPerformed(new TextEntry(compileResponse.getResultString(), true,TextEntry.ENTRY_TYPE.INFO));
+    }
+    else if(compileResponse.getState() == CompileResponse.COMPILE_ERROR)
+    {
+      dataProvider.notifyPerformed(new TextEntry("Compile Error", true,TextEntry.ENTRY_TYPE.ERROR));
+      dataProvider.notifyPerformed(new TextEntry(compileResponse.getResultString(), true,TextEntry.ENTRY_TYPE.ERROR));
+    }
+    else if(compileResponse.getState() == CompileResponse.RUNTIME_ERROR)
+    {
+      dataProvider.notifyPerformed(new TextEntry("Runtime Error", true,TextEntry.ENTRY_TYPE.ERROR));
+      dataProvider.notifyPerformed(new TextEntry(compileResponse.getResultString(), true,TextEntry.ENTRY_TYPE.ERROR));
+    }
 
   }
 
@@ -86,10 +117,6 @@ public class OnlineCompilerTask
     dataProvider.notifyPerformed(
       new TextEntry("----------------------------------------------------------------------------------------------",
         true, TextEntry.ENTRY_TYPE.INFO));
-//    dataProvider.notifyPerformed(new TextEntry("Compiling", TextEntry.ENTRY_TYPE.INFO));
-//    dataProvider.notifyPerformed(new TextEntry("Platform :- " + codePlatform.toString(), TextEntry.ENTRY_TYPE.MESSAGE));
-//    dataProvider.notifyPerformed(
-//      new TextEntry("ClassPath libraries :- " + currentLibraries.size(), TextEntry.ENTRY_TYPE.MESSAGE));
   }
 
 

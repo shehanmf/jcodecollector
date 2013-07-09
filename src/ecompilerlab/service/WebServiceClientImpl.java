@@ -1,7 +1,8 @@
 package ecompilerlab.service;
 
 import ecompilerlab.service.impl.CompileRequest;
-import ecompilerlab.service.impl.CompileResult;
+import ecompilerlab.service.app.CompileResult;
+import ecompilerlab.service.impl.CompileResponse;
 import ecompilerlab.service.impl.ECompilerServiceImpl;
 import ecompilerlab.service.impl.LibraryEntity;
 import ecompilerlab.service.impl.Platforms;
@@ -46,7 +47,7 @@ public class WebServiceClientImpl implements WebServiceClient
     return port.getAllAvailableLibraries();
   }
 
-  public CompileResult doCompile(CompileRequest request)
+  public CompileResponse doCompile(CompileRequest request)
   {
     return port.doCompile(request);
   }

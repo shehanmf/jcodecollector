@@ -79,7 +79,7 @@ public class CompilationDetailTextPanel extends JPanel implements SnippetChangeS
       @Override
       public void actionPerformed(ActionEvent e)
       {
-        compileSnippet();
+        compileAndRunSnippet();
       }
     });
     gridBagConstraints = new java.awt.GridBagConstraints();
@@ -102,10 +102,9 @@ public class CompilationDetailTextPanel extends JPanel implements SnippetChangeS
     add(jScrollPane2, gridBagConstraints);
   }// </editor-fold>
 
-  private void compileSnippet()
+  private void compileAndRunSnippet()
   {
-    OnlineCompilerTask.getInstance().doCompile();
-//    this.compilerListner.fireCompileAction();
+    OnlineCompilerTask.getInstance().doCompileAndRun();
   }
 
 

@@ -16,6 +16,8 @@ public class ApplicationSettings
 
   private String testClassName;
 
+  private String libraryBasePath;
+
   public static ApplicationSettings getInstance()
   {
     return settings;
@@ -46,5 +48,15 @@ public class ApplicationSettings
   public void setTestClassName(String testClassName)
   {
     this.testClassName = testClassName;
+  }
+
+  public String getLibraryBasePath()
+  {
+    return libraryBasePath;
+  }
+
+  public void setLibraryBasePath(String libraryBasePath)
+  {
+    this.libraryBasePath = libraryBasePath;
   }
 }

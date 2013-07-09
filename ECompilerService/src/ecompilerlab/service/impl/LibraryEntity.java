@@ -7,63 +7,90 @@ package ecompilerlab.service.impl;
  * Time: 7:44 AM
  * To change this template use File | Settings | File Templates.
  */
-public class LibraryEntity {
+public class LibraryEntity
+{
 
-    private int id;
+  private int id;
 
-    private String name;
+  private String name;
 
-    private Platforms platform;
+  private Platforms platform;
 
-    private boolean isFromCloud;
+  private boolean isFromCloud;
 
-    private String[] libNames;
+  private String baseLibPath;
 
-    public LibraryEntity(int id, String name, Platforms platform, boolean fromCloud, String[] libNames) {
-        this.id = id;
-        this.name = name;
-        this.platform = platform;
-        isFromCloud = fromCloud;
-        this.libNames = libNames;
-    }
+  private String[] libNames;
 
-    public int getId() {
-        return id;
-    }
+  public LibraryEntity(int id, String name, Platforms platform, boolean fromCloud, String baseLibPath,
+                       String[] libNames)
+  {
+    this.id = id;
+    this.name = name;
+    this.platform = platform;
+    isFromCloud = fromCloud;
+    this.baseLibPath = baseLibPath;
+    this.libNames = libNames;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public int getId()
+  {
+    return id;
+  }
 
-    public String[] getLibNames() {
-        return libNames;
-    }
+  public void setId(int id)
+  {
+    this.id = id;
+  }
 
-    public void setLibNames(String[] libNames) {
-        this.libNames = libNames;
-    }
+  public String[] getLibNames()
+  {
+    return libNames;
+  }
 
-    public Platforms getPlatform() {
-        return platform;
-    }
+  public void setLibNames(String[] libNames)
+  {
+    this.libNames = libNames;
+  }
 
-    public void setPlatform(Platforms platform) {
-        this.platform = platform;
-    }
+  public Platforms getPlatform()
+  {
+    return platform;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setPlatform(Platforms platform)
+  {
+    this.platform = platform;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName()
+  {
+    return name;
+  }
 
-    public boolean isFromCloud() {
-        return isFromCloud;
-    }
+  public void setName(String name)
+  {
+    this.name = name;
+  }
 
-    public void setFromCloud(boolean fromCloud) {
-        isFromCloud = fromCloud;
-    }
+  public boolean isFromCloud()
+  {
+    return isFromCloud;
+  }
+
+  public void setFromCloud(boolean fromCloud)
+  {
+    isFromCloud = fromCloud;
+  }
+
+  public String getBaseLibPath()
+  {
+    return baseLibPath;
+  }
+
+  public void setBaseLibPath(String baseLibPath)
+  {
+    this.baseLibPath = baseLibPath;
+  }
 }
+

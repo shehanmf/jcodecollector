@@ -22,7 +22,7 @@ public class DynaCompTest
     // If class should be in some package,
     // fullName should contain it too
     // (ex. "testpackage.DynaClass")
-    String fullName = "TestClassCompile";
+    String fullName = "ECompilerTest";
 
 //    // Here we specify the source code of the class to be compiled
 //    StringBuilder src = new StringBuilder();
@@ -35,28 +35,50 @@ public class DynaCompTest
 
 
 
-    String src = "public class TestClassCompile\n" +
+//    String src = "public class TestClassCompile\n" +
+//      "{\n" +
+//      "\t\n" +
+//      "  public static void main(final String[] args)\n" +
+//      "  {\n" +
+//      "    new TestClassCompile() .testCount();\n" +
+//      "  }\n" +
+//      "\n" +
+//      "  public void testCount()\n" +
+//      "  {\n" +
+//      "    int nums[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};\n" +
+//      "    int sum = 0;\n" +
+//      "\n" +
+//      "\n" +
+//      "    for (int x : nums)\n" +
+//      "    {\n" +
+//      "      System.out.println(\"Value is: \" + x);\n" +
+//      "      sum += x;\n" +
+//      "    }\n" +
+//      "\n" +
+//      "    System.out.println(\"Summation: \" + sum);\n" +
+//      "  }\n" +
+//      "}";
+    String src = "public class ECompilerTest\n" +
       "{\n" +
-      "\t\n" +
-      "  public static void main(String[] args)\n" +
-      "  {\n" +
-      "    new TestClassCompile() .testCount();\n" +
-      "  }\n" +
-      "\n" +
-      "  public void testCount()\n" +
-      "  {\n" +
-      "    int nums[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};\n" +
-      "    int sum = 0;\n" +
+      "public static void main(final String[] args)\n" +
+      "{\n" +
+      "ECompilerTest ecompilertest = new ECompilerTest();\n" +
+      "ecompilertest.test1();\n" +
+      "}\n" +
       "\n" +
       "\n" +
-      "    for (int x : nums)\n" +
-      "    {\n" +
-      "      System.out.println(\"Value is: \" + x);\n" +
-      "      sum += x;\n" +
-      "    }\n" +
-      "\n" +
-      "    System.out.println(\"Summation: \" + sum);\n" +
-      "  }\n" +
+      "public void test1()\n" +
+      "{\n" +
+      "int nums[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; \n" +
+      "int sum = 0; \n" +
+      " \n" +
+      "for(int x : nums) { \n" +
+      " \tSystem.out.println(\"Value is: \" + x);\n" +
+      "\tsum += x; \n" +
+      "} \n" +
+      " \n" +
+      "System.out.println(\"Summation: \" + sum);\n" +
+      "}\n" +
       "}";
 
     System.out.println(src);

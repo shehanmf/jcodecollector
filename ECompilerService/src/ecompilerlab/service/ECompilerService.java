@@ -1,7 +1,8 @@
 package ecompilerlab.service;
 
 import ecompilerlab.service.impl.CompileRequest;
-import ecompilerlab.service.impl.CompileResult;
+import ecompilerlab.service.app.CompileResult;
+import ecompilerlab.service.impl.CompileResponse;
 import ecompilerlab.service.impl.LibraryEntity;
 import ecompilerlab.service.impl.Platforms;
 import ecompilerlab.service.impl.PlatformsInfo;
@@ -20,7 +21,7 @@ public interface ECompilerService
 
   public LibraryEntity[] getAllAvailableLibraries();
 
-  public CompileResult doCompile(CompileRequest request);
+  public CompileResponse doCompile(CompileRequest request);
 
   public PlatformsInfo getInfoByPlatform(Platforms platforms);
 

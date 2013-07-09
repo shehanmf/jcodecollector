@@ -35,6 +35,7 @@ public class ApplicationSettingsManager
 
     settings.setJavaHome(properties.getProperty("java_home", ""));
     settings.setTestClassName("ECompilerTest");
+    settings.setLibraryBasePath("H:\\Project\\ecompilerlab\\ECompilerService\\lib");
   }
   //settings.dat
 }

@@ -17,6 +17,17 @@ public class CompileRequest implements Serializable{
 
   private String[] libraryIDs;
 
+  private boolean compileOnly;
+
+
+  public CompileRequest(String code, Platforms platform, String[] libraryIDs, boolean compileOnly)
+  {
+    this.code = code;
+    this.platform = platform;
+    this.libraryIDs = libraryIDs;
+    this.compileOnly = compileOnly;
+  }
+
   public String getCode()
   {
     return code;
@@ -45,5 +56,15 @@ public class CompileRequest implements Serializable{
   public void setLibraryIDs(String[] libraryIDs)
   {
     this.libraryIDs = libraryIDs;
+  }
+
+  public boolean isCompileOnly()
+  {
+    return compileOnly;
+  }
+
+  public void setCompileOnly(boolean compileOnly)
+  {
+    this.compileOnly = compileOnly;
   }
 }

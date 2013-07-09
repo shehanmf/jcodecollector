@@ -1,7 +1,8 @@
 package ecompilerlab.service.app;
 
 import ecompilerlab.service.impl.CompileRequest;
-import ecompilerlab.service.impl.CompileResult;
+import ecompilerlab.service.impl.CompileResponse;
+import ecompilerlab.service.impl.Platforms;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,22 +21,73 @@ public class CompileFacade
     return instance;
   }
 
-  public CompileResult doCompile(CompileRequest request)
+  public CompileResponse doCompile(CompileRequest request)
   {
-    switch (request.getPlatform())
+
+    final ECompilerAbstractFactory eCompiler = getECompiler(request.getPlatform());
+    final AbstractECodeFormatter codeFormatter = eCompiler.createCodeFormatter();
+
+    try
     {
-      case JAVA:
+      final String formattedCode = codeFormatter
+        .generate(request.getCode(), ApplicationSettings.getInstance().getTestClassName());
 
-      case C:
+      final String className = codeFormatter.getClassName(formattedCode);
 
-      case C_PLUS:
+      final AbstractECompiler codeCompiler = eCompiler.createCodeCompiler();
 
-      case C_SHARP:
+      final CompileResult compileResult = codeCompiler
+        .compile(className, formattedCode, LibraryFacade.getInstance().getLibrariesByID(request.getLibraryIDs()));
 
-      case PYTHON:
+      if (compileResult.getResultCode() == CompileResult.RESULT_SUCCESS)
+      {
+        if (request.isCompileOnly())
+        {
+          return new CompileResponse(CompileResponse.SUCCESS, "Compilation Success");
+        }
+        else
+        {
+          final AbstractECodeRunner codeRunner = eCompiler.createCodeRunner();
+          final ExecuteResult executeResult = codeRunner.executeCode(className, compileResult);
+
+          if (executeResult.getResultCode() == ExecuteResult.RESULT_SUCCESS)
+          {
+            return new CompileResponse(CompileResponse.SUCCESS, executeResult.getFormattedResult());
+          }
+          else
+          {
+            return new CompileResponse(CompileResponse.RUNTIME_ERROR, executeResult.getFormattedRuntimeError());
+          }
+        }
+      }
+      else
+      {
+        return new CompileResponse(CompileResponse.COMPILE_ERROR, compileResult.getFormattedCompileError());
+      }
+
 
     }
-    return new CompileResult(CompileResult.RESULT_SUCCESS, "Compile success", "Running", "no errors");
+    catch (InvalidSourceException e)
+    {
+      return null;
+    }
   }
+
+
+  public static ECompilerAbstractFactory getECompiler(Platforms platform)
+  {
+    switch (platform)
+    {
+      case JAVA:
+        return new JavaECompilerFactory();
+
+      case C:
+        return new CECompilerFactory();
+    }
+    return null;
+
+
+  }
+
 
 }

@@ -1,7 +1,6 @@
 package ecompilerlab.component;
 
-import ecompilerlab.service.impl.LibraryEntity;
-import ecompilerlab.service.impl.Platforms;
+import ecompilerlab.clientstub.Platforms;
 
 import java.util.ArrayList;
 

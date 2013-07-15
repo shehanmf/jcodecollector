@@ -1,9 +1,9 @@
 package ecompilerlab.component.model;
 
+import ecompilerlab.clientstub.LibraryEntity;
+import ecompilerlab.clientstub.LibraryType;
+import ecompilerlab.clientstub.Platforms;
 import ecompilerlab.component.ECompilerLibrarySourceListItem;
-import ecompilerlab.service.impl.LibraryEntity;
-import ecompilerlab.service.impl.LibraryType;
-import ecompilerlab.service.impl.Platforms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,7 +86,7 @@ public class AddLibraryDialogModel implements Cloneable {
     public void loadsAvailableLibraries() {
 
         availableLibraries.clear();
-        if(selectedLibType.equals(LibraryType.Platform))
+        if(selectedLibType.equals(LibraryType.PLATFORM))
         {
             for(LibraryEntity entity :allLibraries)
             {
@@ -96,7 +96,7 @@ public class AddLibraryDialogModel implements Cloneable {
                 }
             }
         }
-        else if(selectedLibType.equals(LibraryType.Native))
+        else if(selectedLibType.equals(LibraryType.NATIVE))
         {
             for(LibraryEntity entity :allLibraries)
             {

@@ -1,8 +1,8 @@
 package ecompilerlab.component;
 
 import com.explodingpixels.macwidgets.SourceListCategory;
+import ecompilerlab.clientstub.LibraryEntity;
 import ecompilerlab.component.model.AddLibraryDialogModel;
-import ecompilerlab.service.impl.LibraryEntity;
 import ecompilerlab.util.ModelSupport;
 import jcodecollector.State;
 import jcodecollector.common.bean.Snippet;

@@ -1,11 +1,13 @@
 package ecompilerlab.service;
 
-import ecompilerlab.service.impl.CompileRequest;
-import ecompilerlab.service.app.CompileResult;
-import ecompilerlab.service.impl.CompileResponse;
-import ecompilerlab.service.impl.LibraryEntity;
-import ecompilerlab.service.impl.Platforms;
-import ecompilerlab.service.impl.PlatformsInfo;
+
+import ecompilerlab.clientstub.CompileRequest;
+import ecompilerlab.clientstub.CompileResponse;
+import ecompilerlab.clientstub.LibraryEntity;
+import ecompilerlab.clientstub.PlatformsInfo;
+import ecompilerlab.clientstub.Platforms;
+import ecompilerlab.clientstub.ResourceLookUpEntry;
+import ecompilerlab.component.CompilerDataProvideListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,5 +27,12 @@ public interface WebServiceClient
 
   public PlatformsInfo getInfoByPlatform(Platforms platforms);
 
-  LibraryEntity[] getLibrariesByID(String[] ids);
+  public LibraryEntity[] getLibrariesByID(String[] ids);
+
+  public void setDataProvider(CompilerDataProvideListener dataProvider);
+
+  public void doConnect();
+
+  public ResourceLookUpEntry[] classLookUp(String className,Platforms platforms,String[] libIds);
+
 }

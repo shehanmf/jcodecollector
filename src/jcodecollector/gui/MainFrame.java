@@ -40,8 +40,9 @@ import javax.swing.filechooser.FileFilter;
 
 //import jcodecollector.MacUtilities;
 import ecompilerlab.component.*;
-import ecompilerlab.service.impl.LibraryEntity;
-import ecompilerlab.service.impl.Platforms;
+import ecompilerlab.clientstub.LibraryEntity;
+import ecompilerlab.clientstub.Platforms;
+import ecompilerlab.service.WebServiceClientImpl;
 import ecompilerlab.util.SyntaxSupport;
 import jcodecollector.State;
 import jcodecollector.common.bean.Snippet;
@@ -96,7 +97,7 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
   private ECompilerRightPanel rightPanel = new ECompilerRightPanel();
 
     /** Il pannello contenente l'editor degli snippet. */
-    public MyDialog mainPanel = new MyDialog(this);
+    public MyDialog mainPanel;
 
     /** L'etichetta con le statistiche sul database. */
     private JLabel statusLabel;
@@ -123,8 +124,14 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
 
     private JPanel hidePanel = new JPanel();
 
+  private CompilerDataProvideListener dataProvider;
+
   public MainFrame()
   {
+    addCompilationSupport();
+    WebServiceClientImpl.getInstance().setDataProvider(dataProvider);
+    WebServiceClientImpl.getInstance().doConnect();
+    this.mainPanel = new MyDialog(this);
     setTitle(ApplicationInfoFactory.getInstance().getCurrentApplication().getApplicationName());
     setUndecorated(true);
     JRootPane rootPane = getRootPane();
@@ -264,14 +271,14 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
     state.updateMenu(true, true);
     state.updateLineNumbers(true);
 
-    addCompilationSupport();
+
   }
 
 
   private void addCompilationSupport()
   {
 
-    OnlineCompilerTask.getInstance().setDataProvider(new CompilerDataProvideListener()
+    dataProvider= new CompilerDataProvideListener()
     {
 
       @Override
@@ -300,7 +307,8 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
       {
         compileInfo.append(textEntry);
       }
-    });
+    };
+    OnlineCompilerTask.getInstance().setDataProvider(dataProvider);
   }
 
     /**

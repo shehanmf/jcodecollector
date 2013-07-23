@@ -29,19 +29,19 @@ public class SyntaxSupport
       switch (platform)
       {
         case JAVA:
-          syntaxMap.put("Java", SyntaxConstants.SYNTAX_STYLE_JAVA);
+          syntaxMap.put(platform.toString(), SyntaxConstants.SYNTAX_STYLE_JAVA);
           break;
         case C:
-          syntaxMap.put("C", SyntaxConstants.SYNTAX_STYLE_C);
+          syntaxMap.put(platform.toString(), SyntaxConstants.SYNTAX_STYLE_C);
           break;
         case C_PLUS:
-          syntaxMap.put("C++", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS);
+          syntaxMap.put(platform.toString(), SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS);
           break;
         case C_SHARP:
-          syntaxMap.put("C#", SyntaxConstants.SYNTAX_STYLE_CSHARP);
+          syntaxMap.put(platform.toString(), SyntaxConstants.SYNTAX_STYLE_CSHARP);
           break;
         case PYTHON:
-          syntaxMap.put("Python", SyntaxConstants.SYNTAX_STYLE_PYTHON);
+          syntaxMap.put(platform.toString(), SyntaxConstants.SYNTAX_STYLE_PYTHON);
           break;
       }
     }

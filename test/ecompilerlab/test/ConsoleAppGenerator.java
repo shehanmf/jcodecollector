@@ -1,6 +1,8 @@
 package ecompilerlab.test;
 
+import java.util.regex.Matcher;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author bharatha.silva
@@ -11,6 +13,7 @@ public class ConsoleAppGenerator
   public static final char NEW_LINE_CHAR = '\n';
   public static final char CLOSE_BRACKET = '}';
   public static final char OPEN_BRACKET = '{';
+  private static Pattern classPrt = Pattern.compile(".*\\s*class\\s+([a-zA-Z_$][a-zA-Z\\d_$]*)\\s*.*?");
   private String source;
   private String suggestedClassName;
 
@@ -27,6 +30,11 @@ public class ConsoleAppGenerator
 
   public String generate() throws InvalidSourceException
   {
+    if (isCompleteClass(source))
+    {
+      return source;
+    }
+
     checkIncompleteBrackets();
 
     final StringBuilder sb = new StringBuilder();
@@ -98,5 +106,12 @@ public class ConsoleAppGenerator
     {
       throw new InvalidSourceException("Incomplete source : mismatch of open\\close brackets");
     }
+  }
+
+  private boolean isCompleteClass(final String source)
+  {
+    final Matcher matcher = classPrt.matcher(source);
+
+    return matcher.find();
   }
 }

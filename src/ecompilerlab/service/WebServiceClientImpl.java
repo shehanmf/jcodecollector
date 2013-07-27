@@ -159,11 +159,7 @@ public class WebServiceClientImpl implements WebServiceClient
         }
 
         @Override
-        public List<ResourceLookUpEntry> classLookUp(
-          @WebParam(name = "className", targetNamespace = "") String className,
-          @WebParam(name = "platforms", targetNamespace = "") Platforms platforms,
-          @WebParam(name = "libraryIDs",
-            targetNamespace = "") List<String> libraryIDs)
+        public List<ResourceLookUpEntry> classLookUp(String className,Platforms platforms,List<String> libraryIDs)
         {
           final List<LibraryEntity> librariesByID = getLibrariesByID(libraryIDs);
           final List<ecompilerlab.service.impl.LibraryEntity> libraryEntities = convertLib(librariesByID);

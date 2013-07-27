@@ -6,100 +6,129 @@ package ecompilerlab.test; /**
  * To change this template use File | Settings | File Templates.
  */
 
+import org.jdesktop.swingx.JXTaskPane;
+import org.jdesktop.swingx.JXTaskPaneContainer;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Shehan
  */
-public class SugPanel extends JFrame
-{
+public class SugPanel extends JFrame {
 
 
-  public static void main(String[] args)
-  {
+    JXTaskPaneContainer tpc = new JXTaskPaneContainer();
 
-    new SugPanel().setVisible(true);
-  }
+    List<JXTaskPane> panels = new ArrayList<JXTaskPane>();
+    public static void main(String[] args) {
 
-  /**
-   * Creates new form ecompilerlab.test.SugPanel
-   */
-  public SugPanel()
-  {
-    initComponents();
-    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-  }
+        new SugPanel().setVisible(true);
+    }
+
+    /**
+     * Creates new form ecompilerlab.test.SugPanel
+     */
+    public SugPanel() {
+        initComponents();
+
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    }
 
 
-  private void initComponents()
-  {
-    java.awt.GridBagConstraints gridBagConstraints;
+    private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-    jTextField1 = new javax.swing.JTextField();
-    jButton1 = new javax.swing.JButton();
-    suggpan = new javax.swing.JPanel();
+        jTextField1 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        suggpan = new javax.swing.JPanel();
 
-    setLayout(new java.awt.GridBagLayout());
+        setLayout(new java.awt.GridBagLayout());
 
-    jTextField1.setColumns(20);
-    gridBagConstraints = new java.awt.GridBagConstraints();
-    gridBagConstraints.gridx = 0;
-    gridBagConstraints.gridy = 0;
-    add(jTextField1, gridBagConstraints);
+        jTextField1.setColumns(20);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        add(jTextField1, gridBagConstraints);
 
-    jButton1.setText("Search");
-    jButton1.setToolTipText("");
-    jButton1.setActionCommand("Search");
+        jButton1.setText("Search");
+        jButton1.setToolTipText("");
+        jButton1.setActionCommand("Search");
 
-    jButton1.addActionListener(new ActionListener()
-    {
-      @Override
-      public void actionPerformed(ActionEvent e)
-      {
+        jButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-        final String searchText = jTextField1.getText();
-        if (searchText != null && searchText.length() > 0)
-        {
-          SnipSearch.searchSnippet(searchText);
-        }
+                final String searchText = jTextField1.getText();
+                if (searchText != null && searchText.length() > 0) {
+                    SniperResponce sniperResponce = SnipSearch.searchSnippet(searchText);
 
-      }
-    });
-    gridBagConstraints = new java.awt.GridBagConstraints();
-    gridBagConstraints.gridx = 1;
-    gridBagConstraints.gridy = 0;
-    add(jButton1, gridBagConstraints);
+                    if (sniperResponce != null && sniperResponce.items != null && sniperResponce.items.size() > 0) {
+                        List<SnippetItems> items = sniperResponce.items;
 
-    javax.swing.GroupLayout suggpanLayout = new javax.swing.GroupLayout(suggpan);
-    suggpan.setLayout(suggpanLayout);
-    suggpanLayout.setHorizontalGroup(
-      suggpanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGap(0, 439, Short.MAX_VALUE)
-    );
-    suggpanLayout.setVerticalGroup(
-      suggpanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGap(0, 391, Short.MAX_VALUE)
-    );
+                        int itemsLength = (items.size() > 10) ? 10:items.size();
 
-    gridBagConstraints = new java.awt.GridBagConstraints();
-    gridBagConstraints.gridx = 0;
-    gridBagConstraints.gridy = 1;
-    gridBagConstraints.gridwidth = 2;
-    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-    gridBagConstraints.weightx = 1.0;
-    gridBagConstraints.weighty = 2.0;
-    add(suggpan, gridBagConstraints);
-    pack();
-  }// </editor-fold>
+                        for (int i = 0; i < itemsLength; i++) {
 
-  // Variables declaration - do not modify
-  private javax.swing.JButton jButton1;
+                            SnippetItems snippetItems = items.get(i);
 
-  private javax.swing.JTextField jTextField1;
+//                            try {
+////                                Document doc = Jsoup.connect(snippetItems.html_url).get();
+////                                Element last = doc.select("td").last();
+//                            } catch (Exception e1) {
+//                                e1.printStackTrace();
+//                            }
 
-  private javax.swing.JPanel suggpan;
-  // End of variables declaration
+                            JXTaskPane newp = new JXTaskPane("Sample (" + (i + 1) + ")");
+                            newp.add(new JLabel(snippetItems.name));
+                            tpc.add(newp) ;
+                            tpc.revalidate();
+                            tpc.repaint();
+
+
+                        }
+
+                    }
+
+
+                }
+
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        add(jButton1, gridBagConstraints);
+
+        suggpan.setLayout(new BorderLayout());
+        suggpan.add(new JScrollPane(tpc));
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 2.0;
+        add(suggpan, gridBagConstraints);
+        pack();
+    }// </editor-fold>
+
+    // Variables declaration - do not modify
+    private javax.swing.JButton jButton1;
+
+    private javax.swing.JTextField jTextField1;
+
+    private javax.swing.JPanel suggpan;
+    // End of variables declaration
 }
 

@@ -26,7 +26,7 @@ import java.io.StringReader;
 public class SnipSearch
 {
 
-  public static void searchSnippet(String searchString)
+  public static SniperResponce searchSnippet(String searchString)
   {
 //    String url = "https://api.github.com/search/code?q=org.apache.commons.math3.stat.Frequency+in:file+extension:Java";
 
@@ -50,81 +50,23 @@ public class SnipSearch
 
 // Create a Reader from String
         Reader stringReader = new StringReader(jsonContent);
-        printURLS(stringReader);
-
-//        InputStream content = entity.getContent();
-
-//        BufferedReader bReader = new BufferedReader(new InputStreamReader(content));
-//        String line;
-//        while ((line = bReader.readLine()) != null) {
-//          builder.append(line);
-//        }
-
+        return printURLS(stringReader);
       }
-
-//      System.out.println("Response Code : "
-//        + response.getStatusLine().getStatusCode());
-//
-//      BufferedReader rd = new BufferedReader(
-//        new InputStreamReader(response.getEntity().getContent()));
-//
-//      StringBuffer result = new StringBuffer();
-//      String line = "";
-//      while ((line = rd.readLine()) != null) {
-//        result.append(line);
-//      }
-//
-//      System.out.println("Result smf  :-  "  + result.toString());
     }
     catch (IOException e)
     {
       e.printStackTrace();
     }
 
+      return null;
   }
 
 
-  private static void printURLS(Reader stringReader) throws IOException
+  private static SniperResponce printURLS(Reader stringReader) throws IOException
   {
 
     Gson gson = new Gson();
-    SniperResponce response = gson.fromJson(stringReader, SniperResponce.class);
-
-    System.out.println("count :- " + response.total_count);
-
-//    JsonReader reader = new JsonReader(stringReader);
-//    reader.setLenient(true);
-//    reader.beginObject();
-//
-//    while (reader.hasNext())
-//    {
-//
-//      String name = reader.nextName();
-//      if (name.equals("total_count"))
-//      {
-//
-//        final String totalCount = reader.nextString();
-//        System.out.println("Totle Results :- " + totalCount);
-//
-//        final int i = Integer.parseInt(totalCount);
-//        if (i > 0)
-//        {
-//          final String itemsName = reader.nextName();
-//
-//          if (itemsName.equals("items"))
-//          {
-//            reader.beginArray();
-//            reader.beginObject();
-//
-//            System.out.println("test");
-//          }
-//
-//        }
-//
-//      }
-//    }
-//    readGson(reader);
-
+    return gson.fromJson(stringReader, SniperResponce.class);
   }
 
 

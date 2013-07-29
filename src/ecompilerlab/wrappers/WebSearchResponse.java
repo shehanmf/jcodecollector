@@ -1,5 +1,10 @@
 package ecompilerlab.wrappers;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Shehan
@@ -7,6 +12,11 @@ package ecompilerlab.wrappers;
  * Time: 12:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public class WebSearchResponse
+public class WebSearchResponse implements Serializable
 {
+
+  public List<WebSearchItem> items;
+
+  @SerializedName("total_count")
+  public String total_count;
 }

@@ -10,11 +10,13 @@ import ecompilerlab.clientstub.LibraryType;
 import ecompilerlab.clientstub.Platforms;
 import ecompilerlab.clientstub.PlatformsInfo;
 import ecompilerlab.clientstub.ResourceLookUpEntry;
+import ecompilerlab.clientstub.SuggestionText;
 import ecompilerlab.component.CompilerDataProvideListener;
 import ecompilerlab.component.TextEntry;
 import ecompilerlab.service.app.CompileFacade;
 import ecompilerlab.service.app.LibraryFacade;
 import ecompilerlab.service.app.PlatformFacade;
+import ecompilerlab.wrappers.SuggestionTextWrapper;
 
 import javax.jws.WebParam;
 import java.util.ArrayList;
@@ -106,6 +108,22 @@ public class WebServiceClientImpl implements WebServiceClient
     this.dataProvider = dataProvider;
   }
 
+
+  @Override
+  public SuggestionTextWrapper[] getValidSuggestedStrings(Platforms platforms, String[] availableStrings, String[] libIds)
+  {
+    final List<SuggestionText> validSuggestedStrings = port
+      .getValidSuggestedStrings(platforms, Arrays.asList(availableStrings), Arrays.asList(libIds));
+
+    List<SuggestionTextWrapper> returnObj = new ArrayList<SuggestionTextWrapper>();
+    for (SuggestionText validSuggestedString : validSuggestedStrings)
+    {
+      returnObj.add(new SuggestionTextWrapper(validSuggestedString));
+    }
+
+    return returnObj.toArray(new SuggestionTextWrapper[]{});
+  }
+
   @Override
   public ResourceLookUpEntry[] classLookUp(String className, Platforms platforms, String[] libIds)
   {
@@ -147,6 +165,18 @@ public class WebServiceClientImpl implements WebServiceClient
         }
 
         @Override
+        public List<SuggestionText> getValidSuggestedStrings(Platforms platforms, List<String> availableStrings,
+                                                             List<String> libraryIDs)
+        {
+          final List<LibraryEntity> librariesByID = getLibrariesByID(libraryIDs);
+          final List<ecompilerlab.service.impl.LibraryEntity> libraryEntities = convertLib(librariesByID);
+
+          return convert(Arrays.asList(LibraryFacade.getInstance()
+            .getValidSuggestedStrings(convert(platforms), availableStrings.toArray(new String[]{}),
+              libraryEntities.toArray(new ecompilerlab.service.impl.LibraryEntity[]{}))), null);
+        }
+
+        @Override
         public List<Platforms> getSupportedPlatforms()
         {
           return Arrays.asList(Platforms.values());
@@ -159,7 +189,7 @@ public class WebServiceClientImpl implements WebServiceClient
         }
 
         @Override
-        public List<ResourceLookUpEntry> classLookUp(String className,Platforms platforms,List<String> libraryIDs)
+        public List<ResourceLookUpEntry> classLookUp(String className, Platforms platforms, List<String> libraryIDs)
         {
           final List<LibraryEntity> librariesByID = getLibrariesByID(libraryIDs);
           final List<ecompilerlab.service.impl.LibraryEntity> libraryEntities = convertLib(librariesByID);
@@ -313,6 +343,28 @@ public class WebServiceClientImpl implements WebServiceClient
     entity.setFromCloud(libraryEntity.isFromCloud());
     entity.setPlatform(convert(libraryEntity.getPlatform()));
     entity.setLibNames(libraryEntity.getLibNames().toArray(new String[]{}));
+    return entity;
+  }
+
+
+  public List<SuggestionText> convert(List<ecompilerlab.service.impl.SuggestionText> suggestionText, String tmp)
+  {
+    List<SuggestionText> entities = new ArrayList<SuggestionText>();
+    for (ecompilerlab.service.impl.SuggestionText entity : suggestionText)
+    {
+      entities.add(convert(entity));
+    }
+
+    return entities;
+  }
+
+
+  public SuggestionText convert(ecompilerlab.service.impl.SuggestionText suggestionText)
+  {
+    SuggestionText entity = new SuggestionText();
+    entity.setSuggestionString(suggestionText.getSuggestionString());
+    entity.setDisplayName(suggestionText.getDisplayName());
+    entity.setLibraryName(suggestionText.getLibraryName());
     return entity;
   }
 

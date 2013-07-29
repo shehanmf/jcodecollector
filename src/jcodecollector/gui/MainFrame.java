@@ -182,14 +182,14 @@ public class MainFrame extends JFrame implements CountListener, SnippetListener,
     compilationInfoSplit.setBorder(null);
     compilationInfoSplit.setDividerSize(1);
     compilationInfoSplit.setContinuousLayout(true);
-    compilationInfoSplit.setDividerLocation(850);
+    compilationInfoSplit.setDividerLocation(800);
     compilationInfoSplit.setTopComponent(split);
     compilationInfoSplit.setBottomComponent(compileInfo);
 
     rightSplit.setBorder(null);
-    rightSplit.setDividerSize(1);
+    rightSplit.setDividerSize(5);
     rightSplit.setContinuousLayout(true);
-    rightSplit.setDividerLocation(1350);
+    rightSplit.setDividerLocation(1275);
     rightSplit.setLeftComponent(compilationInfoSplit);
     rightSplit.setRightComponent(rightPanel);
 

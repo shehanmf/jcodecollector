@@ -7,7 +7,9 @@ import ecompilerlab.clientstub.LibraryEntity;
 import ecompilerlab.clientstub.PlatformsInfo;
 import ecompilerlab.clientstub.Platforms;
 import ecompilerlab.clientstub.ResourceLookUpEntry;
+import ecompilerlab.clientstub.SuggestionText;
 import ecompilerlab.component.CompilerDataProvideListener;
+import ecompilerlab.wrappers.SuggestionTextWrapper;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,4 +37,5 @@ public interface WebServiceClient
 
   public ResourceLookUpEntry[] classLookUp(String className,Platforms platforms,String[] libIds);
 
+  public SuggestionTextWrapper[] getValidSuggestedStrings(Platforms platforms,String[] availableStrings,String[] libIds);
 }

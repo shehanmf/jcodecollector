@@ -1,5 +1,8 @@
 package ecompilerlab.component.controller;
 
+import ecompilerlab.wrappers.SampleCodeCacheEntry;
+import ecompilerlab.wrappers.SuggestionTextWrapper;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Shehan
@@ -10,5 +13,5 @@ package ecompilerlab.component.controller;
 public interface SearchNotifyListener
 {
 
-  public void notifySearch();
+  public void notifySearch(SuggestionTextWrapper webSearchString, SampleCodeCacheEntry sampleCodeCacheEntry);
 }

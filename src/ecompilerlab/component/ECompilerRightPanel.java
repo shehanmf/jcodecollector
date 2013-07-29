@@ -15,39 +15,46 @@ import java.util.ArrayList;
  */
 public class ECompilerRightPanel extends JPanel implements SnippetChangeSupport
 {
-    private JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+  private JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
-    private AddLibPanel addLibPanel;
+  private AddLibPanel addLibPanel;
 
-
-    public ECompilerRightPanel()
-    {
-        this.addLibPanel  = new AddLibPanel();
-        split.setBorder(null);
-        split.setDividerSize(1);
-        split.setContinuousLayout(true);
-        split.setDividerLocation(230);
-        split.setTopComponent(addLibPanel);
-        split.setBottomComponent(new JLabel("Test crawler"));
+  private SuggestionTabPanel suggestionPanel;
 
 
-        ArrayList<String> facrefs = new ArrayList<String>();
+  public ECompilerRightPanel()
+  {
+    this.addLibPanel = new AddLibPanel();
+    this.suggestionPanel = new SuggestionTabPanel();
+    split.setBorder(null);
+    split.setDividerSize(1);
+    split.setContinuousLayout(true);
+    split.setDividerLocation(230);
+    split.setTopComponent(addLibPanel);
+    split.setBottomComponent(suggestionPanel);
 
 
-        setLayout(new BorderLayout());
-        add(split,BorderLayout.CENTER);
+    ArrayList<String> facrefs = new ArrayList<String>();
 
-    }
 
-    public void setSnippet(Snippet snippet) {
-        addLibPanel.setSnippet(snippet);
-    }
+    setLayout(new BorderLayout());
+    add(split, BorderLayout.CENTER);
 
-    public Snippet getSnippet() {
-        return addLibPanel.getSnippet();
-    }
+  }
 
-    public void createNewSnippet() {
-        addLibPanel.createNewSnippet();
-    }
+  public void setSnippet(Snippet snippet)
+  {
+    addLibPanel.setSnippet(snippet);
+    suggestionPanel.setSnippet(snippet);
+  }
+
+  public Snippet getSnippet()
+  {
+    return addLibPanel.getSnippet();
+  }
+
+  public void createNewSnippet()
+  {
+    addLibPanel.createNewSnippet();
+  }
 }

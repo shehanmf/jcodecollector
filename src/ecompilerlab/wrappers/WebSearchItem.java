@@ -3,10 +3,10 @@ package ecompilerlab.wrappers;
 /**
  * Created with IntelliJ IDEA.
  * User: Shehan
- * Date: 6/30/13
- * Time: 11:36 AM
+ * Date: 7/28/13
+ * Time: 12:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LibraryClientWrapper {
-
+public class WebSearchItem
+{
 }

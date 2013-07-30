@@ -28,6 +28,7 @@ public class WebSuggestionPanel extends JPanel
 
   private WebSuggestionModel model;
 
+  private List<SearchCriteriaCheckBox> addedCriteria;
 
   public WebSuggestionPanel(WebSuggestionModel model)
   {
@@ -41,6 +42,7 @@ public class WebSuggestionPanel extends JPanel
 
     this.setLayout(new GridBagLayout());
 
+    addedCriteria = new ArrayList<SearchCriteriaCheckBox>();
     this.showSuggestionPanel = new JPanel();
     this.showSuggestionPanel.setLayout(new FlowLayout());
     showSuggestionPanel.setSize(new Dimension(200, 60));
@@ -102,6 +104,7 @@ public class WebSuggestionPanel extends JPanel
 
   private void removeAllSuggested()
   {
+    addedCriteria.clear();
     showSuggestionPanel.removeAll();
     revalidate();
     this.suggestionContainer.removeAll();
@@ -110,17 +113,39 @@ public class WebSuggestionPanel extends JPanel
 
   public void addEntry(SuggestionTextWrapper webSearchString, SampleCodeCacheEntry sampleCodeCacheEntry)
   {
-    model.addEntry(webSearchString,sampleCodeCacheEntry);
+    model.addEntry(webSearchString, sampleCodeCacheEntry);
+
+    SearchCriteriaCheckBox searchCriteriaCheckBox = getcSearchCriteriaCheckBox(webSearchString);
+    if (searchCriteriaCheckBox == null)
+    {
+      searchCriteriaCheckBox = new SearchCriteriaCheckBox(webSearchString);
+      showSuggestionPanel.add(searchCriteriaCheckBox);
+      addedCriteria.add(searchCriteriaCheckBox);
+    }
+
+
     SampleCodeViewer viewer = new SampleCodeViewer(webSearchString, sampleCodeCacheEntry);
+    final SampleCodeViewer.CodeViewVisibleListener viewVisibleListener = viewer.getViewVisibleListener();
+    searchCriteriaCheckBox.addListener(viewVisibleListener);
     suggestionContainer.add(viewer);
+
+
     suggestionContainer.revalidate();
   }
 
-  private void updateSearchCriteria()
+  private SearchCriteriaCheckBox getcSearchCriteriaCheckBox(SuggestionTextWrapper webSearchString)
   {
 
-//    showSuggestionPanel.getco
-//    model.
+    for (SearchCriteriaCheckBox searchCriteriaCheckBox : addedCriteria)
+    {
+      final SuggestionTextWrapper textWrapper = searchCriteriaCheckBox.getSuggestionTextWrapper();
+      if (textWrapper.equals(webSearchString))
+      {
+        return searchCriteriaCheckBox;
+      }
+    }
+
+    return null;
   }
 
 }

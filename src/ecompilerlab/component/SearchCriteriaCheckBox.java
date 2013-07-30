@@ -56,4 +56,9 @@ public class SearchCriteriaCheckBox extends JCheckBox implements ItemListener
     }
 
   }
+
+  public SuggestionTextWrapper getSuggestionTextWrapper()
+  {
+    return suggestionTextWrapper;
+  }
 }

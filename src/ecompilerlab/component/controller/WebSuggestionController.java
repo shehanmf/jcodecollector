@@ -183,9 +183,9 @@ public class WebSuggestionController
               {
                 if (snippetID == currentSnippet.getID())
                 {
-//                  view.addEntry(webSearchString, sampleCodeCacheEntry);
-                  model.addEntry(webSearchString,sampleCodeCacheEntry);
-                  view.modelChanged();
+                  view.addEntry(webSearchString, sampleCodeCacheEntry);
+//                  model.addEntry(webSearchString,sampleCodeCacheEntry);
+//                  view.modelChanged();
                   System.out.println("Adding web entry ....");
                 }
 

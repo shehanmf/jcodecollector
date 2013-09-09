@@ -302,6 +302,8 @@ public class WebServiceClientImpl implements WebServiceClient
         return ecompilerlab.service.impl.Platforms.C;
       case C_PLUS:
         return ecompilerlab.service.impl.Platforms.C_PLUS;
+      case PYTHON:
+        return ecompilerlab.service.impl.Platforms.PYTHON;
       default:
         return null;
 
@@ -412,6 +414,9 @@ public class WebServiceClientImpl implements WebServiceClient
         return Platforms.C;
       case C_PLUS:
         return Platforms.C_PLUS;
+      case PYTHON:
+        return Platforms.PYTHON;
+
       default:
         return null;
 

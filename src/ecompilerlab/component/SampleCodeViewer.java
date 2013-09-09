@@ -113,8 +113,7 @@ public class SampleCodeViewer extends JXTaskPane
 
   private void addToFavorite()
   {
-
-    //TODO impl
+    new TagSourceDialog(Loader.getFrameForDialogs()).setVisible(true);
   }
 
   private void openExternalView(String htmlCode)

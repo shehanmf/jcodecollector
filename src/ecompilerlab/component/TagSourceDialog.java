@@ -1,6 +1,11 @@
 package ecompilerlab.component;
 
+import ecompilerlab.component.model.SourceTagDialogModel;
+
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,12 +24,33 @@ public class TagSourceDialog extends JDialog
   private JPanel jPanel2;
   private JTextField txtName;
   private JTextField txtTags;
+  private RateComponent[] rateComponents;
+
+  private SourceTagDialogModel model;
 
 
-  public TagSourceDialog(JFrame owner)
+
+  public TagSourceDialog(JFrame owner,SourceTagDialogModel model)
   {
     super(owner, true);
+    this.model = model;
+    setUndecorated(true);
+    JRootPane rootPane = getRootPane();
+    rootPane.setWindowDecorationStyle(JRootPane.FRAME);
+    rootPane.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
+    rootPane.putClientProperty("Quaqua.RootPane.isVertical", Boolean.FALSE);
+    rootPane.putClientProperty("Quaqua.RootPane.isPalette", Boolean.TRUE);
+    setLocationRelativeTo(owner);
+    setTitle("Tag Snippets");
     initComponents();
+    initFromModel();
+  }
+
+  private void initFromModel()
+  {
+
+    this.txtName.setText(this.model.getName());
+    this.txtTags.setText(this.model.getTagsAsString());
   }
 
 
@@ -36,10 +62,58 @@ public class TagSourceDialog extends JDialog
     lblTags = new JLabel();
     txtName = new JTextField();
     txtTags = new JTextField();
+    txtTags.setEnabled(false);
     jPanel1 = new JPanel();
     btnSave = new JButton();
     btnCancel = new JButton();
     jPanel2 = new JPanel();
+    jPanel2.setLayout(new GridBagLayout());
+
+    if(model != null && model.getTags() != null && model.getTags().size() > 0)
+    {
+      rateComponents = new RateComponent[model.getTags().size()];
+
+      for (int i = 0; i < model.getTags().size(); i++)
+      {
+        final String tag = model.getTags().get(i);
+        rateComponents[i] = new RateComponent(tag);
+
+        GridBagConstraints coins = new GridBagConstraints();
+        coins.gridx = 0;
+        coins.gridy = i;
+        jPanel2.add(rateComponents[i],coins) ;
+
+      }
+
+    }
+//    jPanel2 = new StarRater();
+//    jPanel2.addStarListener(new StarRater.StarListener()
+//    {
+//      @Override
+//      public void handleSelection(int selection)
+//      {
+//        model.setRatings(selection);
+//      }
+//    });
+
+    btnCancel.addActionListener(new ActionListener()
+    {
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+
+        TagSourceDialog.this.dispose();
+      }
+    });
+
+    btnSave.addActionListener(new ActionListener()
+    {
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        System.out.println("ratingd :- " + model.getRatings());
+      }
+    });
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -91,16 +165,6 @@ public class TagSourceDialog extends JDialog
     gridBagConstraints.weightx = 1.0;
     getContentPane().add(jPanel1, gridBagConstraints);
 
-    javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-    jPanel2.setLayout(jPanel2Layout);
-    jPanel2Layout.setHorizontalGroup(
-      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGap(0, 100, Short.MAX_VALUE)
-    );
-    jPanel2Layout.setVerticalGroup(
-      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGap(0, 100, Short.MAX_VALUE)
-    );
 
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;

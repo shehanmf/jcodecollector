@@ -49,6 +49,7 @@ public class WebSuggestionController
     {
       instance = new WebSuggestionController();
       model = new WebSuggestionModel();
+      model.setCurrentSnippet(currentSnippet);
       view = new WebSuggestionPanel(model);
 
       timer = new Timer();
@@ -74,6 +75,7 @@ public class WebSuggestionController
     this.currentSnippet = snippet;
     this.snippetChanged = true;
     view.modelChanged();
+    model.setCurrentSnippet(this.currentSnippet);
   }
 
 

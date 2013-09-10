@@ -3,6 +3,7 @@ package ecompilerlab.component;
 import ecompilerlab.component.model.WebSuggestionModel;
 import ecompilerlab.wrappers.SampleCodeCacheEntry;
 import ecompilerlab.wrappers.SuggestionTextWrapper;
+import jcodecollector.common.bean.Snippet;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 
@@ -33,7 +34,6 @@ public class WebSuggestionPanel extends JPanel
   public WebSuggestionPanel(WebSuggestionModel model)
   {
     this.model = model;
-
     initUI();
   }
 
@@ -68,7 +68,6 @@ public class WebSuggestionPanel extends JPanel
 
     this.add(new JScrollPane(this.suggestionContainer), cons2);
 
-
   }
 
 
@@ -83,14 +82,11 @@ public class WebSuggestionPanel extends JPanel
 
       final SearchCriteriaCheckBox comp = new SearchCriteriaCheckBox(suggestionTextWrapper);
 
-
-//      comp.addItemListener();
-
       showSuggestionPanel.add(comp);
 
       for (SampleCodeCacheEntry entry : sampleCodeCacheEntries)
       {
-        SampleCodeViewer viewer = new SampleCodeViewer(suggestionTextWrapper, entry);
+        SampleCodeViewer viewer = new SampleCodeViewer(suggestionTextWrapper, entry,model);
         suggestionContainer.add(viewer);
         suggestionContainer.revalidate();
 
@@ -124,7 +120,7 @@ public class WebSuggestionPanel extends JPanel
     }
 
 
-    SampleCodeViewer viewer = new SampleCodeViewer(webSearchString, sampleCodeCacheEntry);
+    SampleCodeViewer viewer = new SampleCodeViewer(webSearchString, sampleCodeCacheEntry,model);
     final SampleCodeViewer.CodeViewVisibleListener viewVisibleListener = viewer.getViewVisibleListener();
     searchCriteriaCheckBox.addListener(viewVisibleListener);
     suggestionContainer.add(viewer);

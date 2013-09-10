@@ -134,7 +134,7 @@ public class Snippet implements Cloneable {
 
     /**
      * Restituisce un clone dell'array dei tag dello snippet.
-     * 
+     *
      * @return un clone dell'array dei tag dello snippet.
      */
     public String[] getTags() {
@@ -142,7 +142,13 @@ public class Snippet implements Cloneable {
         return this.tags.toArray(new String[] {});
     }
 
-    /**
+
+    public ArrayList<String> getTagsAsList()
+    {
+      return tags;
+    }
+
+  /**
      * Aggiorna i tag dello snippet.
      * 
      * @param tags l'array contenente i nuovi tag.

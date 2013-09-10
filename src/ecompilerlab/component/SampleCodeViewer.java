@@ -1,5 +1,7 @@
 package ecompilerlab.component;
 
+import ecompilerlab.component.model.SourceTagDialogModel;
+import ecompilerlab.component.model.WebSuggestionModel;
 import ecompilerlab.util.IconLib;
 import ecompilerlab.wrappers.SampleCodeCacheEntry;
 import ecompilerlab.wrappers.SuggestionTextWrapper;
@@ -36,10 +38,14 @@ public class SampleCodeViewer extends JXTaskPane
 
   private CodeViewVisibleListener viewVisibleListener;
 
-  public SampleCodeViewer(SuggestionTextWrapper suggestionTextWrapper, final SampleCodeCacheEntry sourceCode)
+  private WebSuggestionModel suggestionModel;
+
+  public SampleCodeViewer(SuggestionTextWrapper suggestionTextWrapper, final SampleCodeCacheEntry sourceCode,final
+                          WebSuggestionModel suggestionModel)
   {
     super("Sample for (" + suggestionTextWrapper.getDisplayName() + ")");
 
+    this.suggestionModel = suggestionModel;
     this.setCollapsed(true);
     this.wrapper = suggestionTextWrapper;
     this.sourceCode = sourceCode;
@@ -113,7 +119,12 @@ public class SampleCodeViewer extends JXTaskPane
 
   private void addToFavorite()
   {
-    new TagSourceDialog(Loader.getFrameForDialogs()).setVisible(true);
+    SourceTagDialogModel sourceTagDialogModel = new SourceTagDialogModel();
+    sourceTagDialogModel.setName(this.suggestionModel.getCurrentSnippet().getName());
+    sourceTagDialogModel.setTags(this.suggestionModel.getCurrentSnippet().getTagsAsList());
+    sourceTagDialogModel.setSourceCode(this.sourceCode.getHtmlCode());
+
+    new TagSourceDialog(Loader.getFrameForDialogs(),sourceTagDialogModel).setVisible(true);
   }
 
   private void openExternalView(String htmlCode)

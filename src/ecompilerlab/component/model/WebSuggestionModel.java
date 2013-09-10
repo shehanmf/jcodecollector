@@ -2,6 +2,7 @@ package ecompilerlab.component.model;
 
 import ecompilerlab.wrappers.SampleCodeCacheEntry;
 import ecompilerlab.wrappers.SuggestionTextWrapper;
+import jcodecollector.common.bean.Snippet;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -19,6 +20,7 @@ public class WebSuggestionModel
 
   private Hashtable<SuggestionTextWrapper, List<SampleCodeCacheEntry>> searchedEntry;
 
+  private Snippet currentSnippet;
 
   public WebSuggestionModel()
   {
@@ -56,5 +58,15 @@ public class WebSuggestionModel
     }
 
     sampleCodeCacheEntries.add(sampleCodeCacheEntry);
+  }
+
+  public Snippet getCurrentSnippet()
+  {
+    return currentSnippet;
+  }
+
+  public void setCurrentSnippet(Snippet currentSnippet)
+  {
+    this.currentSnippet = currentSnippet;
   }
 }
